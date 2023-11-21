@@ -1,0 +1,6 @@
+# BE ignore
+be/node_modules
+be/bin
+
+# FE ignore
+fe/node_modules
