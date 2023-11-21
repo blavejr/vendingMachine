@@ -19,7 +19,6 @@ async function authorize(
 
   const isPassword = await comparePasswords(user.password, password);
   const isUser = basicAuth.safeCompare(username, user.username);
-  console.log(isUser, isPassword, user, username, password);
   
   if (isUser && isPassword) {
     return cb(null, true);
@@ -34,11 +33,6 @@ function getUnauthorizedResponse(req: IBasicAuthedRequest) {
     ? `Credentials ${user}-${password} rejected`
     : "No credentials provided";
 }
-
-const isWhiteListed = (req: Request) => {
-  const { method, path } = req;
-  return method === "POST" && path === "/user/";
-};
 
 export const authMiddleware = basicAuth({
   authorizer: authorize,

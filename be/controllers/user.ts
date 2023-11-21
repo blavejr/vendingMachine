@@ -3,6 +3,17 @@ import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 import bcrypt from "bcrypt";
 
+export async function login(username: string): Promise<any> {
+  
+  const user = await UserModel.findOne({username: username});
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return {...formatUser(user), password: undefined};
+}
+
 export async function get(id: string): Promise<any> {
   const user = await UserModel.findById(id);
 
@@ -11,6 +22,13 @@ export async function get(id: string): Promise<any> {
   }
 
   return {...formatUser(user), password: undefined};
+}
+
+export async function getAll(): Promise<any> {
+  const users = await UserModel.find();
+  return users.map((user) => {
+    return {...formatUser(user), password: undefined};
+  });
 }
 
 export async function create(user: User): Promise<any> {
@@ -35,6 +53,16 @@ export async function update(id: string, user: User): Promise<any> {
     const updatedUser = await UserModel.findByIdAndUpdate(id, newUser, {new: true});
     
     return {...formatUser(updatedUser!), password: undefined};
+}
+
+// reset deposit to 0
+export async function resetDeposit(username: string): Promise<any> {
+  // get user
+  const currentUser = await UserModel.findOne({username: username});
+  // update user
+  const updatedUser = await UserModel.findOneAndUpdate(currentUser!._id, {deposit: 0}, {new: true});
+
+  return {...formatUser(updatedUser!), password: undefined};
 }
 
 export async function delete_(id: string): Promise<User> {

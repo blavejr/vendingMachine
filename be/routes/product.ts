@@ -3,11 +3,16 @@ import express, { Response } from "express";
 import { IBasicAuthedRequest } from "express-basic-auth"
 import * as productController from "../controllers/product";
 import { Product } from "../models/product";
+import { authMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
-router.get("/", (req: any, res: Response) => {
-  res.send("product route");
+router.get("/", async (req: any, res: Response) => {
+  const products: Array<Product> = await productController.getAll();
+  res.json({
+    items: products,
+    total: products.length,
+  });
 });
 
 router.get("/:id", async (req: any, res: Response) => {
@@ -15,17 +20,19 @@ router.get("/:id", async (req: any, res: Response) => {
   res.json(product);
 });
 
-router.post("/", async (req: any, res: Response) => {
-  const product: Product = await productController.create(req.auth.user, req.body);
+router.post("/", authMiddleware, async (req: any, res: Response) => {
+  const { user } = req.auth || {};
+  const product: Product = await productController.create(user, req.body);
   res.json(product);
 });
 
-router.patch("/:id", async (req: any, res: Response) => {
-  const product: Product = await productController.update(req.params.id, req.body);
+router.put("/", authMiddleware, async (req: any, res: Response) => {
+  const { user } = req.auth || {};
+  const product: Product = await productController.update(user, req.body);
   res.json(product);
 });
 
-router.delete("/:id", async (req: any, res: Response) => {
+router.delete("/:id", authMiddleware, async (req: any, res: Response) => {
   const product: Product = await productController.delete_(req.params.id);
   res.json(product);
 });

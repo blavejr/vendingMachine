@@ -5,30 +5,33 @@ import { authMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, (req, res) => {
-  res.send("user route");
-});
+// TODO: fix the any type
+// router.get("/", authMiddleware, async (req: any, res) => {
+//   const user: User = await userController.login(req.auth.user);
+//   res.json(user);
+// });
 
 // Returns a user from the database for the given id
-router.get("/:id", authMiddleware, async (req, res) => {
-  const user: User = await userController.get(req.params.id);
-  res.json(user);
-});
-
-// // TODO: should not require authentication
-router.post("/", async (req, res) => {
-  const user: User = await userController.create(req.body);
-  res.json(user);
-});
-
-router.patch("/:id", authMiddleware, async (req, res) => {
-  const user: User = await userController.update(req.params.id, req.body);
-  res.json(user);
-});
-
-router.delete("/:id", authMiddleware, async (req, res) => {
-  const user: User = await userController.delete_(req.params.id);
-  res.json(user);
-});
+router
+  .get("/reset", authMiddleware, async (req: any, res) => {
+    const user: User = await userController.resetDeposit(req.auth.user);
+    res.json(user);
+  })
+  .get("/:id", authMiddleware, async (req, res) => {
+    const user: User = await userController.get(req.params.id);
+    res.json(user);
+  })
+  .post("/", async (req, res) => {
+    const user: User = await userController.create(req.body);
+    res.json(user);
+  })
+  .patch("/:id", authMiddleware, async (req, res) => {
+    const user: User = await userController.update(req.params.id, req.body);
+    res.json(user);
+  })
+  .delete("/:id", authMiddleware, async (req, res) => {
+    const user: User = await userController.delete_(req.params.id);
+    res.json(user);
+  });
 
 export default router;
