@@ -1,14 +1,31 @@
+import { Document } from "mongoose";
 import { User } from "../models/user";
 
-export function formatUser(user: User, isNew: Boolean = false): User {
-    return {
-      name: user.name,
-      username: user.username,
-      password: user.password,
-      deposit: user.deposit,
-      role: user.role,
-      created_at: !isNew ? user.created_at : new Date(),
-      updated_at: !isNew ? user.updated_at : new Date(),
-    };
-  }
-  
+export function formatUser<T extends Document>(
+  user: T,
+  isNew: Boolean = false
+): User {
+  const {
+    _id,
+    name,
+    username,
+    password,
+    deposit,
+    role,
+    created_at,
+    updated_at,
+  } = user.toObject();
+
+  const formattedUser: User = {
+    id: _id,
+    name,
+    username,
+    password,
+    deposit,
+    role,
+    created_at: !isNew ? created_at : new Date(),
+    updated_at: !isNew ? updated_at : new Date(),
+  };
+
+  return formattedUser;
+}

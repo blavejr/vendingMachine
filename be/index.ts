@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(acceptOnlyJson);
 
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 app.use(router);
 

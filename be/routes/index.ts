@@ -1,4 +1,5 @@
 import express from "express";
+import { authMiddleware } from "../middleware/auth";
 import userRouter from "./user";
 import productRouter from "./product";
 import depositRoutes from "./deposit";

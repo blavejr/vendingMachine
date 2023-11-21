@@ -1,23 +1,29 @@
+import { format } from "path";
 import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
+import bcrypt from "bcrypt";
 
-export async function get(id: string): Promise<User> {
+export async function get(id: string): Promise<any> {
   const user = await UserModel.findById(id);
 
   if (!user) {
     throw new Error("User not found");
   }
 
-  return formatUser(user);
+  return {...formatUser(user), password: undefined};
 }
 
-export async function create(user: User): Promise<User> {
-  const newUser = new UserModel(user);
+export async function create(user: User): Promise<any> {
+  const newUser = new UserModel({
+    ...user,
+    password: await hashPassword(user.password),
+  });
   await newUser.save();
-  return formatUser(newUser, true);
+  const formattedUser = formatUser(newUser, true);
+  return {...formattedUser, password: undefined};
 }
 
-export async function update(id: string, user: User): Promise<User> {
+export async function update(id: string, user: User): Promise<any> {
     const currentUser = await UserModel.findById(id);
 
     const newUser = {
@@ -28,10 +34,19 @@ export async function update(id: string, user: User): Promise<User> {
 
     const updatedUser = await UserModel.findByIdAndUpdate(id, newUser, {new: true});
     
-    return formatUser(updatedUser!);
+    return {...formatUser(updatedUser!), password: undefined};
 }
 
 export async function delete_(id: string): Promise<User> {
     const user = await UserModel.findByIdAndDelete(id);
     return formatUser(user!);
+}
+
+async function hashPassword(plaintextPassword:string) {
+    const saltRounds = 10;
+    return await bcrypt.hash(String(plaintextPassword), saltRounds);
+}
+
+export async function comparePasswords(hash:string, plaintextPassword:string) {
+    return await bcrypt.compare(String(plaintextPassword), hash);
 }

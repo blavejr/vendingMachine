@@ -11,6 +11,6 @@ DB_.once("connected", () => {
 });
 
 export function connectMongoDB(): void {
-  const mongoURI = "mongodb://localhost:27017/vendingMachine";
+  const mongoURI = "mongodb://mongo:27017/vendingMachine";
   mongoose.connect(mongoURI);
 }

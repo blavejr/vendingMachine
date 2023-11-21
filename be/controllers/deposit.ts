@@ -4,13 +4,17 @@ import { formatUser } from "../utils/user";
 export async function update(id: string, deposit: number): Promise<User> {
     const currentUser = await UserModel.findById(id);
 
+    if(!currentUser) {
+        throw new Error("User not found");
+    }
+
     if(!isDenomination(deposit)) {
         throw new Error("Invalid deposit amount");
     }
     
     const newUser = {
-        ...formatUser(currentUser!),
-        deposit: deposit + currentUser!.deposit,
+        ...formatUser(currentUser),
+        deposit: deposit + currentUser.deposit,
         updated_at: new Date(),
     }
 

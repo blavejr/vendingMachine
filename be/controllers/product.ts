@@ -1,4 +1,5 @@
 import ProductModel, { Product } from "../models/product";
+import UserModel from "../models/user";
 
 export async function get(id: string): Promise<Product> {
   const product = await ProductModel.findById(id);
@@ -10,8 +11,23 @@ export async function get(id: string): Promise<Product> {
   return formatProduct(product);
 }
 
-export async function create(product: Product): Promise<Product> {
-  const newProduct = new ProductModel(product);
+export async function create(authUserName: string, product: Product): Promise<Product> {
+  const user = await UserModel.findOne({username: authUserName});
+  console.log(user);
+  console.log(!user && user!.role === "seller");
+  
+  if (!user) {
+    throw new Error("User not found");
+  }
+  
+  if (user.role !== "seller") {
+    throw new Error("User not a seller");
+  }
+
+  const newProduct = new ProductModel({
+    ...product,
+    sellerId: user!._id,
+  });
   await newProduct.save();
   return formatProduct(newProduct, true);
 }
@@ -42,5 +58,6 @@ function formatProduct(product: Product, isNew: Boolean = false): Product {
     amountAvailable: product.amountAvailable,
     cost: product.cost,
     productName: product.productName,
+    sellerId: product.sellerId,
   };
 }
