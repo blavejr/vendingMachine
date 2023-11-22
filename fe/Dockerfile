@@ -12,8 +12,11 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# Build the app
+RUN npm run build
+
 # Expose port 3001
-EXPOSE 3001
+EXPOSE 3000
 
 # Run the app
 CMD [ "npm", "start" ]

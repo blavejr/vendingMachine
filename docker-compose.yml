@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  be:
+    container_name: vending_be
+    env_file:
+      - ./be/.env
+    build:
+      context: ./be/
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./be/:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - vending
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - vending
+
+  fe:
+    container_name: vending_fe
+    build:
+      context: ./fe/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./fe/:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - vending
+    depends_on:
+      - be
+
+networks:
+  vending:

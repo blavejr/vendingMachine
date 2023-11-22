@@ -1,5 +1,4 @@
 import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
-import { Request, Response } from "express";
 import { comparePasswords } from "../controllers/user";
 import UserModel, { User } from "../models/user";
 
