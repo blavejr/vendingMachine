@@ -4,14 +4,24 @@ import { authMiddleware } from "./middleware/auth";
 import { acceptOnlyJson } from "./middleware/headers";
 import { connectMongoDB } from "./models/index";
 import router from "./routes/index";
+import cors from "cors";
 
 connectMongoDB();
 const app = express();
 
-app.use(bodyParser.json());
+const corsOptions = {
+  origin: ['http://localhost:3000'], // Replace with the origin of your React app
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(acceptOnlyJson);
 
-// app.use(authMiddleware);
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json()); // support json encoded bodies
 
 app.use(router);
 

@@ -24,7 +24,7 @@ export async function get(id: string): Promise<any> {
 
 export async function getAll(): Promise<any> {
   const users = await UserModel.find();
-  return users.map((user) => {
+  return users.map((user: any) => {
     return { ...formatUser(user), password: undefined };
   });
 }

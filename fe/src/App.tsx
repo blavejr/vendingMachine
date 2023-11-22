@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import styles from "./App.module.scss";
+import LoginPage from "./pages/Login/Login";
+import RegisterPage from "./pages/Register/Register";
+import cx from "classnames";
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Landing from "./pages/Landing/Landing";
+import Home from "./pages/Home/Home";
+import AuthGuard from "./components/AuthGuard";
+
+const BrowserRouter = createBrowserRouter([
+  {
+    path: "/home",
+    element: (
+      <AuthGuard>
+        <Home />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: "/",
+    element: <Landing />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={cx(styles.App)}>
+      <RouterProvider router={BrowserRouter} />
     </div>
   );
 }

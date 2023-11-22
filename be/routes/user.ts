@@ -2,6 +2,7 @@ import express from "express";
 import * as userController from "../controllers/user";
 import { User } from "../models/user";
 import { authMiddleware } from "../middleware/auth";
+import cors from "cors";
 
 const router = express.Router();
 
@@ -15,6 +16,10 @@ const router = express.Router();
 router
   .get("/reset", authMiddleware, async (req: any, res) => {
     const user: User = await userController.resetDeposit(req.auth.user);
+    res.json(user);
+  })
+  .get("/", authMiddleware, async (req: any, res) => {
+    const user: User = await userController.login(req.auth.user);
     res.json(user);
   })
   .get("/:id", authMiddleware, async (req, res) => {
