@@ -1,4 +1,4 @@
-Sure, let's organize these statements into different sections based on the part of the app they pertain to:
+let's organize these statements into different sections based on the part of the app they pertain to:
 
 ### User Model and Authentication:
 1. Implement user model with username, password, deposit and role fields.
