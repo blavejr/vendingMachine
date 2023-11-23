@@ -16,7 +16,9 @@ setup should be as simple as running one command `docker-compose up`
 
 - CI/CD
     - Github actions
-        - I will try to atleast have that it builds and checks the images with snyk or something since I do not have a personall registry ro upload to
+        - check if images can build
+        - check if tests will pass in CI
+        - might add uloading images to docker registry if there is time
 
 # Postman
 Postman collection is included in the backend as a json file that can be imported into postman
