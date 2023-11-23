@@ -2,6 +2,13 @@ import BuyModel, { Buy } from "../models/buy";
 import UserModel, { User } from "../models/user";
 import ProductModel, { Product } from "../models/product";
 
+// Promise<Buy[]>
+export async function getAll(username: string) {
+    // TODO: also use populate in product controller when getting all products
+    const purchases = await BuyModel.find({ buyerId: (await UserModel.findOne({ username }))?.toObject()!._id }).populate("productId");
+    return purchases;
+}
+
 export async function create(product_id: string, amount: number, username: string): Promise<Buy> {
     // TODO: run this as an aggregate transaction
     const buyer = (await UserModel.findOne({ username }))?.toObject()!;
