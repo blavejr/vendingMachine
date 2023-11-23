@@ -2,8 +2,9 @@ name: Build and Test Docker Images
 
 on:
   push:
-    branches:
-      - master
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
 jobs:
   build:
@@ -27,20 +28,20 @@ jobs:
         image: vending-be
         ports:
           - "3001:3001"
-        options: --network vending
+        env:
+          MONGO_URI: "mongo:27017" 
+        options: --network host
 
       mongo:
         image: mongo
         ports:
           - "27017:27017"
-        networks:
-          - vending
 
       fe:
         image: vending-fe
         ports:
           - "3000:3000"
-        options: --network vending
+        options: --network host
 
     steps:
       - name: Wait for Services to be Ready
@@ -51,6 +52,3 @@ jobs:
 
       - name: Run Frontend Tests
         run: docker exec vending-fe npm test
-
-networks:
-  vending:
