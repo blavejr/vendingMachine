@@ -1,9 +1,9 @@
-name: Build Docker Images
+name: Build and Test Docker Images
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -18,3 +18,39 @@ jobs:
 
       - name: Build Frontend Docker Image
         run: docker build -t vending-fe ./fe/
+
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      be:
+        image: vending-be
+        ports:
+          - "3001:3001"
+        options: --network vending
+
+      mongo:
+        image: mongo
+        ports:
+          - "27017:27017"
+        networks:
+          - vending
+
+      fe:
+        image: vending-fe
+        ports:
+          - "3000:3000"
+        options: --network vending
+
+    steps:
+      - name: Wait for Services to be Ready
+        run: sleep 20s
+
+      - name: Run Backend Tests
+        run: docker exec vending-be npm test
+
+      - name: Run Frontend Tests
+        run: docker exec vending-fe npm test
+
+networks:
+  vending:
