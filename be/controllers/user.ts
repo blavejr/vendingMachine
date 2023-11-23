@@ -1,7 +1,6 @@
 import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 import bcrypt from "bcrypt";
-import * as userSchema from "../validation/users.schema";
 import validationMessages from "../validation/messages.schema";
 
 export async function login(username: string): Promise<any> {
@@ -32,8 +31,6 @@ export async function getAll(): Promise<any> {
 }
 
 export async function create(user: User): Promise<any> {
-  try {
-    await userSchema.create.validate(user, { abortEarly: false });
     const newUser = new UserModel({
       ...user,
       password: await hashPassword(user.password),
@@ -41,24 +38,16 @@ export async function create(user: User): Promise<any> {
     await newUser.save();
     const formattedUser = formatUser(newUser, true);
     return { ...formattedUser, password: undefined };
-  } catch (error) {
-    console.log(error);
-    throw error
-  }
 }
 
-export async function update(id: string, user: User): Promise<any> {
-  const currentUser = await UserModel.findById(id);
-
-  const newUser = {
-    ...formatUser(currentUser!),
-    ...user,
-    updated_at: new Date(),
-  };
-
-  const updatedUser = await UserModel.findByIdAndUpdate(id, newUser, {
-    new: true,
-  });
+export async function update(username: string, user: User): Promise<any> {
+  const updatedUser = await UserModel.findOneAndUpdate(
+    {username: username},
+    user,
+    {
+      new: true,
+    }
+  );
 
   return { ...formatUser(updatedUser!), password: undefined };
 }

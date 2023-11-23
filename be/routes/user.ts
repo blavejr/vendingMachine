@@ -2,6 +2,7 @@ import express from "express";
 import * as userController from "../controllers/user";
 import { User } from "../models/user";
 import { authMiddleware } from "../middleware/auth";
+import * as userSchema from "../validation/users.schema";
 
 const router = express.Router();
 
@@ -26,12 +27,15 @@ router
     res.json(user);
   })
   .post("/", async (req, res) => {
+    await userSchema.create.validate(req.body, { abortEarly: false });
     const user: User = await userController.create(req.body);
     res.json(user);
   })
-  .patch("/:id", authMiddleware, async (req, res) => {
-    const user: User = await userController.update(req.params.id, req.body);
-    res.json(user);
+  .patch("/", authMiddleware, async (req: any, res) => {
+    const {user} = req.auth;
+    await userSchema.update.validate(req.body, { abortEarly: false });
+    const updatedUser: User = await userController.update(user, req.body);
+    res.json(updatedUser);
   })
   .delete("/:id", authMiddleware, async (req, res) => {
     const user: User = await userController.delete_(req.params.id);
