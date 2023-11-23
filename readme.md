@@ -1,4 +1,23 @@
-let's organize these statements into different sections based on the part of the app they pertain to:
+# Welcome to Vending Machine, a simple implemantation of a vending machine
+
+# Infrastruture
+The project is using docker containers orchastrated by docker compose for simple setup
+
+setup should be as simple as running one command `docker-compose up`
+- frontend -> react (http: http://localhost:3000)
+    - tests
+        - `npm run test:dev`
+- backend -> Nodejs and Express -> (http://localhost:3001/)
+    - tests
+        - `npm run test`
+- database -> MongoDB (port 27017)
+    - migrations
+        - I will try if I have time to add some
+
+# Postman
+Postman collection is included in the backend as a json file that can be imported into postman
+
+# Deliverables
 
 ### User Model and Authentication:
 1. Implement user model with username, password, deposit and role fields.
@@ -20,5 +39,3 @@ let's organize these statements into different sections based on the part of the
 
 ### Considerations:
 11. Take time to think about possible edge cases and access issues that should be solved.
-
-How does this look?
