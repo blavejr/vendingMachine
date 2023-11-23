@@ -40,7 +40,7 @@ jobs:
         run: sleep 20s
 
       - name: Run Backend Tests
-        run: docker-compose -f docker-compose.yml exec -T be npm test
+        run: docker-compose -f docker-compose.yml exec -T be npm test:dev
 
       - name: Run Frontend Tests
-        run: docker-compose -f docker-compose.yml exec -T fe npm test
+        run: docker-compose -f docker-compose.yml exec -T fe npm test:dev
