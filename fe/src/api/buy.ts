@@ -6,8 +6,14 @@ const create = async (productId: string, amount: number) => {
   return response.data;
 };
 
+const getAll = async () => {
+  const response = await api.get(`/buy`);
+  return response.data;
+}
+
 const buyAPI = {
     create,
+    getAll,
 };
 
 export default buyAPI;

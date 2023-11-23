@@ -7,9 +7,14 @@ import cx from "classnames";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Landing from "./pages/Landing/Landing";
 import Home from "./pages/Home/Home";
+import Orders from "./pages/Orders/Orders";
 import AuthGuard from "./components/AuthGuard/AuthGuard";
 
 const BrowserRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Landing />,
+  },
   {
     path: "/home",
     element: (
@@ -19,8 +24,12 @@ const BrowserRouter = createBrowserRouter([
     ),
   },
   {
-    path: "/",
-    element: <Landing />,
+    path: "/orders",
+    element: (
+      <AuthGuard>
+        <Orders />
+      </AuthGuard>
+    ),
   },
   {
     path: "/login",

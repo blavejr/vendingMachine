@@ -74,9 +74,7 @@ export default function Home() {
   return (
     <div>
       <VMNavbar
-        username={user?.name}
-        deposit={user?.deposit}
-        role={user?.role}
+        {...user}
       />
       <Row>
         {!products || !products?.items ? (
