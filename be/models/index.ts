@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import config from "../utils/config";
 
 const DB_ = mongoose.connection;
 
@@ -11,6 +12,6 @@ DB_.once("connected", () => {
 });
 
 export function connectMongoDB(): void {
-  const mongoURI = "mongodb://mongo:27017/vendingMachine";
+  const mongoURI: string = config.mongodbUri;
   mongoose.connect(mongoURI);
 }
