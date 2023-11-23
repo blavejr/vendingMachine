@@ -5,10 +5,10 @@ import validationMessages from "../validation/messages.schema";
 import { Roles } from "../utils/user";
 
 // Promise<Buy[]>
-export async function getAll(username: string) {
+export async function getAll(username: string): Promise<Buy[]> {
   // TODO: also use populate in product controller when getting all products
   const purchases = await BuyModel.find({
-    buyerId: (await UserModel.findOne({ username }))?.toObject()!._id,
+    buyerId: (await UserModel.findOne({ username }))?.toObject()!.id,
   }).populate("productId");
   return purchases;
 }
@@ -18,72 +18,76 @@ export async function create(
   amount: number,
   username: string
 ): Promise<Buy> {
-  // TODO: run this as an aggregate transaction
   const buyer = (await UserModel.findOne({ username }))?.toObject()!;
   const product = (await ProductModel.findById(product_id))?.toObject()!;
   const seller = (await UserModel.findById(product.sellerId))?.toObject()!;
 
-  if (!buyer) {
-    // TODO: create a class or factory to handle errors
+  if (!buyer || buyer.role !== Roles.BUYER || !product || !seller) {
     throw new Error(validationMessages.user.notFound.message);
   }
 
-  if (buyer.role !== Roles.BUYER) {
-    throw new Error(validationMessages.user.notFound.message);
-  }
+  const session = await UserModel.startSession();
+  session.startTransaction();
 
-  if (!product) {
-    throw new Error(validationMessages.product.notFound.message);
-  }
+  try {
+    // 1. Check if buyer has enough money
+    if (buyer.deposit < product.cost * amount) {
+      throw new Error(validationMessages.user.notEnoughMoney.message);
+    }
 
-  if (!seller) {
-    throw new Error(validationMessages.user.notFound.message);
-  }
+    // 2. Check if seller has enough product
+    if (product.amountAvailable < amount) {
+      throw new Error(validationMessages.product.notEnoughProduct.message);
+    }
 
-  // 1. Check if buyer has enough money
-  if (buyer.deposit < product.cost * amount) {
-    throw new Error(validationMessages.user.notEnoughMoney.message);
-  }
+    // 3. Update buyer balance
+    const newBuyerBalance = buyer.deposit - product.cost * amount;
 
-  // 2. Check if seller has enough product
-  if (product.amountAvailable < amount) {
-    throw new Error(validationMessages.product.notEnoughProduct.message);
-  }
+    // 4. Update seller balance
+    const newSellerBalance = seller.deposit + product.cost * amount;
 
-  // 3. Update buyer balance
-  const newBuyerBalance = buyer.deposit - product.cost * amount;
+    // 5. Update product amount
+    const newProductAmount = product.amountAvailable - amount;
 
-  // 4. Update seller balance
-  const newSellerBalance = seller.deposit + product.cost * amount;
+    // 6. Save all changes
+    const newBuy = new BuyModel({
+      amount,
+      buyerId: buyer._id,
+      productId: product._id,
+      sellerId: seller._id,
+    });
 
-  // 5. Update product amount
-  const newProductAmount = product.amountAvailable - amount;
+    await newBuy.save();
 
-  // 6. Save all changes
-  const newBuy = new BuyModel({
-    amount,
-    buyerId: buyer._id,
-    productId: product._id,
-    sellerId: seller._id,
-  });
-
-  await newBuy.save();
-
-  // 7. Update product amount
-  await ProductModel.updateOne(
-    { _id: product._id },
-    { amountAvailable: newProductAmount }
-  );
-
-  // Just in case a user buys from themselves
-  // Shouldn't be possible, but just in case
-  if (buyer._id !== seller._id) {
-    await UserModel.updateOne({ _id: buyer._id }, { deposit: newBuyerBalance });
-    await UserModel.updateOne(
-      { _id: seller._id },
-      { deposit: newSellerBalance }
+    // 7. Update product amount
+    await ProductModel.updateOne(
+      { _id: product._id },
+      { amountAvailable: newProductAmount }
     );
-  }
 
-  return newBuy;
+    // Just in case a user buys from themselves
+    // Shouldn't be possible because sellers cant buy, but just in case
+    if (buyer._id !== seller._id) {
+      await UserModel.updateOne(
+        { _id: buyer._id },
+        { deposit: newBuyerBalance }
+      );
+      await UserModel.updateOne(
+        { _id: seller._id },
+        { deposit: newSellerBalance }
+      );
+    }
+
+    // MongoDB transaction commits here
+    await session.commitTransaction();
+    session.endSession();
+
+    return newBuy;
+  } catch (error) {
+    // If any error occurs, MongoDB transaction rolls back
+    await session.abortTransaction();
+    session.endSession();
+    console.log(error);
+    throw error;
+  }
 }
