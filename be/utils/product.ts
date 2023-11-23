@@ -11,6 +11,7 @@ export function formatProduct<T extends Document>(
     cost,
     productName,
     sellerId,
+    image,
     created_at,
     updated_at,
   } = product.toObject();
@@ -21,6 +22,7 @@ export function formatProduct<T extends Document>(
     cost,
     productName,
     sellerId,
+    image,
     created_at: !isNew ? created_at : new Date(),
     updated_at: !isNew ? updated_at : new Date(),
   };

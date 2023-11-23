@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { read } from '../utils/localStorage';
+import { read } from '../../utils/localStorage';
 
 const AuthGuard = ({ children }: any) => {
   const navigate = useNavigate();

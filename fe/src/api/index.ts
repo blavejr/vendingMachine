@@ -42,16 +42,10 @@ export const patch = async (url: string, data: any): Promise<any> => {
   return response;
 };
 
-export const delete_ = async (url: string) => {
-  const response = await api.delete(url);
-  return response;
-};
-
 export default {
   get,
   post,
   put,
   remove,
   patch,
-  delete_,
 };

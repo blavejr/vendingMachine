@@ -7,7 +7,7 @@ import cx from "classnames";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Landing from "./pages/Landing/Landing";
 import Home from "./pages/Home/Home";
-import AuthGuard from "./components/AuthGuard";
+import AuthGuard from "./components/AuthGuard/AuthGuard";
 
 const BrowserRouter = createBrowserRouter([
   {

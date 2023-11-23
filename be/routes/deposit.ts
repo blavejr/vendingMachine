@@ -1,15 +1,20 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import * as depositController from "../controllers/deposit";
 import { User } from "../models/user";
+import { authMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
-router.patch("/:id", async (req, res) => {
+router.patch("/", authMiddleware, async (req:any, res: Response) => {
   const { deposit } = req.body || 0;
-  const { id } = req.params || null;
+  const { user } = req.auth || null;
 
-  const user: User = await depositController.update(id, deposit);
-  res.json(user);
+  if (!user || !deposit) {
+    throw new Error("Invalid request");
+  }
+
+  const updatedUser: User = await depositController.update(user, deposit);
+  res.json(updatedUser);
 });
 
 export default router;

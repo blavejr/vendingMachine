@@ -17,7 +17,7 @@ const register = async (data: any) => {
 };
 
 const delete_ = async (id: string) => {
-  const response = await api.delete_(`/user/${id}`);
+  const response = await api.remove(`/user/${id}`);
   return response.data;
 };
 
@@ -31,7 +31,7 @@ const getUser = async (id: string) => {
     return response.data;
 }
 
-const user = {
+const userAPI = {
   login,
   logout,
   register,
@@ -40,4 +40,4 @@ const user = {
   getUser,
 };
 
-export default user;
+export default userAPI;

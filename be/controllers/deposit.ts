@@ -1,8 +1,8 @@
 import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 
-export async function update(id: string, deposit: number): Promise<User> {
-    const currentUser = await UserModel.findById(id);
+export async function update(username: string, deposit: number): Promise<User> {
+    const currentUser = await UserModel.findOne({username: username});
 
     if(!currentUser) {
         throw new Error("User not found");
@@ -17,8 +17,8 @@ export async function update(id: string, deposit: number): Promise<User> {
         deposit: deposit + currentUser.deposit,
         updated_at: new Date(),
     }
-
-    const updatedUser = await UserModel.findByIdAndUpdate(id, newUser, {new: true});
+    // TODO: no need to find current user first, just use findOneAndUpdate
+    const updatedUser = await UserModel.findByIdAndUpdate(currentUser.id, newUser, {new: true});
     
     return formatUser(updatedUser!);
 }

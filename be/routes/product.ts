@@ -1,6 +1,6 @@
 import express, { Response } from "express";
 // TODO: use the correct type for those any
-import { IBasicAuthedRequest } from "express-basic-auth"
+import { IBasicAuthedRequest } from "express-basic-auth";
 import * as productController from "../controllers/product";
 import { Product } from "../models/product";
 import { authMiddleware } from "../middleware/auth";
@@ -26,8 +26,13 @@ router.post("/", authMiddleware, async (req: any, res: Response) => {
   res.json(product);
 });
 
+// TODO: This should be a PATCH
 router.put("/", authMiddleware, async (req: any, res: Response) => {
   const { user } = req.auth || {};
+  const { id } = req.body;
+  if (!id || !user) {
+    throw new Error("Product id is required");
+  }
   const product: Product = await productController.update(user, req.body);
   res.json(product);
 });

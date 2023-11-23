@@ -1,8 +1,8 @@
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
 import { setToken, write } from "../../utils/localStorage";
@@ -65,7 +65,7 @@ function FormExample() {
             <Form.Group as={Col} md="12" controlId="validationFormik02">
               <Form.Label>Password</Form.Label>
               <Form.Control
-                type="text"
+                type="password"
                 name="password"
                 value={values.password}
                 onChange={handleChange}

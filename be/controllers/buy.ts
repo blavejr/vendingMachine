@@ -4,10 +4,10 @@ import ProductModel, { Product } from "../models/product";
 
 export async function create(product_id: string, amount: number, username: string): Promise<Buy> {
     // TODO: run this as an aggregate transaction
-    const buyer: User = (await UserModel.findOne({ username }))?.toObject()!;
-    const product: Product = (await ProductModel.findById(product_id))?.toObject()!;
-    const seller: User = (await UserModel.findById(product.sellerId))?.toObject()!;
-
+    const buyer = (await UserModel.findOne({ username }))?.toObject()!;
+    const product = (await ProductModel.findById(product_id))?.toObject()!;
+    const seller = (await UserModel.findById(product.sellerId))?.toObject()!;
+    
     if(!buyer) {
         throw new Error("User not found");
     }
@@ -46,21 +46,21 @@ export async function create(product_id: string, amount: number, username: strin
     // 6. Save all changes
     const newBuy = new BuyModel({
         amount,
-        buyerId: buyer.id,
-        productId: product.id,
-        sellerId: seller.id,
+        buyerId: buyer._id,
+        productId: product._id,
+        sellerId: seller._id,
     });
 
     await newBuy.save();
 
     // 7. Update product amount
-    await ProductModel.updateOne({ _id: product.id }, { amountAvailable: newProductAmount });
+    await ProductModel.updateOne({ _id: product._id }, { amountAvailable: newProductAmount });
 
     // Just in case a user buys from themselves
     // Shouldn't be possible, but just in case
-    if(buyer.id !== seller.id) {
-        await UserModel.updateOne({ _id: buyer.id }, { deposit: newBuyerBalance });
-        await UserModel.updateOne({ _id: seller.id }, { deposit: newSellerBalance });
+    if(buyer._id !== seller._id) {
+        await UserModel.updateOne({ _id: buyer._id }, { deposit: newBuyerBalance });
+        await UserModel.updateOne({ _id: seller._id }, { deposit: newSellerBalance });
     }
 
     return newBuy;
