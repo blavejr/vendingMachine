@@ -7,7 +7,7 @@ on:
     branches: ["master"]
 
 jobs:
-  build:
+  check-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,30 +20,22 @@ jobs:
       - name: Build Frontend Docker Image
         run: docker build -t vending-fe ./fe/
 
-  test:
+  run-tests:
     runs-on: ubuntu-latest
 
-    services:
-      be:
-        image: vending-be
-        ports:
-          - "3001:3001"
-        env:
-          MONGO_URI: "mongo:27017" 
-        options: --network host
-
-      mongo:
-        image: mongo
-        ports:
-          - "27017:27017"
-
-      fe:
-        image: vending-fe
-        ports:
-          - "3000:3000"
-        options: --network host
-
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Backend Docker Image
+        run: docker build -t vending-be ./be/
+
+      - name: Build Frontend Docker Image
+        run: docker build -t vending-fe ./fe/
+
+      - name: Start Services
+        run: docker-compose -f docker-compose.yml up -d
+
       - name: Wait for Services to be Ready
         run: sleep 20s
 
