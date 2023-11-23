@@ -1,12 +1,14 @@
 import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 import bcrypt from "bcrypt";
+import * as userSchema from "../validation/users.schema";
+import validationMessages from "../validation/messages.schema";
 
 export async function login(username: string): Promise<any> {
   const user = await UserModel.findOne({ username: username });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error(validationMessages.user.notFound.message);
   }
 
   return { ...formatUser(user), password: undefined };
@@ -16,7 +18,7 @@ export async function get(id: string): Promise<any> {
   const user = await UserModel.findById(id);
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error(validationMessages.user.notFound.message);
   }
 
   return { ...formatUser(user), password: undefined };
@@ -30,13 +32,19 @@ export async function getAll(): Promise<any> {
 }
 
 export async function create(user: User): Promise<any> {
-  const newUser = new UserModel({
-    ...user,
-    password: await hashPassword(user.password),
-  });
-  await newUser.save();
-  const formattedUser = formatUser(newUser, true);
-  return { ...formattedUser, password: undefined };
+  try {
+    await userSchema.create.validate(user, { abortEarly: false });
+    const newUser = new UserModel({
+      ...user,
+      password: await hashPassword(user.password),
+    });
+    await newUser.save();
+    const formattedUser = formatUser(newUser, true);
+    return { ...formattedUser, password: undefined };
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
 }
 
 export async function update(id: string, user: User): Promise<any> {

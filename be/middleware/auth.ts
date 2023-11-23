@@ -1,6 +1,7 @@
 import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
 import { comparePasswords } from "../controllers/user";
 import UserModel, { User } from "../models/user";
+import validationMessages from "../validation/messages.schema";
 
 async function authorize(
   username: string,
@@ -18,7 +19,7 @@ async function authorize(
 
   const isPassword = await comparePasswords(user.password, password);
   const isUser = basicAuth.safeCompare(username, user.username);
-  
+
   if (isUser && isPassword) {
     return cb(null, true);
   } else {
@@ -29,8 +30,14 @@ async function authorize(
 function getUnauthorizedResponse(req: IBasicAuthedRequest) {
   const { user, password } = req.auth || {};
   return req.auth
-    ? `Credentials ${user}-${password} rejected`
-    : "No credentials provided";
+    ? {
+        status: "fail",
+        message: validationMessages.authentication.invalidCredentials.message,
+      }
+    : {
+        status: "fail",
+        message: validationMessages.authentication.missingCredentials.message,
+      };
 }
 
 export const authMiddleware = basicAuth({

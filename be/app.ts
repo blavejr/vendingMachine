@@ -4,14 +4,11 @@ import { acceptOnlyJson } from "./middleware/headers";
 import { connectMongoDB } from "./models/index";
 import router from "./routes/index";
 import cors from "cors";
-import globalErrorHandler, {
-  catchAsyncErrors,
-} from "./middleware/errorHandling";
+import errorHandlingMiddleware from "./middleware/errorHandling";
 
-// Handle rejected promises globally
-catchAsyncErrors();
-
+// TODO: db connection should happen in server.ts
 connectMongoDB();
+
 const app = express();
 
 const corsOptions = {
@@ -28,7 +25,6 @@ app.use(bodyParser.json()); // support json encoded bodies
 
 app.use(router);
 
-// Custom error-handling middleware
-app.use(globalErrorHandler);
+app.use(errorHandlingMiddleware);
 
 export default app;

@@ -2,7 +2,6 @@ import express from "express";
 import * as userController from "../controllers/user";
 import { User } from "../models/user";
 import { authMiddleware } from "../middleware/auth";
-import cors from "cors";
 
 const router = express.Router();
 
