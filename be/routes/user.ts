@@ -6,13 +6,6 @@ import * as userSchema from "../validation/users.schema";
 
 const router = express.Router();
 
-// TODO: fix the any type
-// router.get("/", authMiddleware, async (req: any, res) => {
-//   const user: User = await userController.login(req.auth.user);
-//   res.json(user);
-// });
-
-// Returns a user from the database for the given id
 router
   .get("/reset", authMiddleware, async (req: any, res) => {
     const user: User = await userController.resetDeposit(req.auth.user);

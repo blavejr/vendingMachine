@@ -1,4 +1,5 @@
 import { Schema, model, Types } from "mongoose";
+import { Roles } from "../utils/user";
 
 export interface User {
   id: Types.ObjectId;
@@ -9,7 +10,7 @@ export interface User {
   created_at: Date;
   updated_at: Date;
   deposit: number;
-  role: "seller" | "buyer";
+  role: Roles;
 }
 
 const userSchema = new Schema<User>({
@@ -17,7 +18,7 @@ const userSchema = new Schema<User>({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   deposit: { type: Number, default: 0 },
-  role: { type: String, enum: ["seller", "buyer"], default: "buyer" },
+  role: { type: String, enum: Roles, default: Roles.BUYER },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
 });

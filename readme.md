@@ -1,5 +1,7 @@
 # Welcome to Vending Machine, a simple implemantation of a vending machine
 
+This is a fullstack tech challange for MVP match Nov 2023
+
 # Infrastruture
 The project is using docker containers orchastrated by docker compose for simple setup
 
@@ -14,7 +16,7 @@ setup should be as simple as running one command `docker-compose up`
     - migrations
         - I will try if I have time to add some
 
-- CI/CD
+- CI/CD -> github actions(https://github.com/blavejr/vendingMachine/actions)
     - Github actions
         - check if images can build
         - check if tests will pass in CI

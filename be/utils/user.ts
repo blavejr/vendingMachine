@@ -29,3 +29,8 @@ export function formatUser<T extends Document>(
 
   return formattedUser;
 }
+
+export enum Roles {
+  SELLER = "seller",
+  BUYER = "buyer",
+}

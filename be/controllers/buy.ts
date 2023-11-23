@@ -2,6 +2,7 @@ import BuyModel, { Buy } from "../models/buy";
 import UserModel, { User } from "../models/user";
 import ProductModel, { Product } from "../models/product";
 import validationMessages from "../validation/messages.schema";
+import { Roles } from "../utils/user";
 
 // Promise<Buy[]>
 export async function getAll(username: string) {
@@ -27,7 +28,7 @@ export async function create(
     throw new Error(validationMessages.user.notFound.message);
   }
 
-  if (buyer.role !== "buyer") {
+  if (buyer.role !== Roles.BUYER) {
     throw new Error(validationMessages.user.notFound.message);
   }
 

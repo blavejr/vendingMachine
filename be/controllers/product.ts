@@ -2,6 +2,7 @@ import ProductModel, { Product } from "../models/product";
 import UserModel from "../models/user";
 import { formatProduct } from "../utils/product";
 import validationMessages from "../validation/messages.schema";
+import { Roles } from "../utils/user";
 
 export async function get(id: string): Promise<Product> {
   const product = await ProductModel.findById(id);
@@ -31,7 +32,8 @@ export async function create(
     throw new Error(validationMessages.user.notFound.message);
   }
 
-  if (user.role !== "seller") {
+  // TODO: these roles should be enums
+  if (user.role !== Roles.SELLER) {
     throw new Error(validationMessages.user.notSeller.message);
   }
 
@@ -60,7 +62,7 @@ export async function update(
     throw new Error(validationMessages.user.notFound.message);
   }
 
-  if (authenticatedUser.role !== "seller") {
+  if (authenticatedUser.role !== Roles.SELLER) {
     throw new Error(validationMessages.user.notSeller.message);
   }
 

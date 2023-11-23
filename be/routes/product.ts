@@ -1,9 +1,8 @@
 import express, { Response } from "express";
-// TODO: use the correct type for those any
-import { IBasicAuthedRequest } from "express-basic-auth";
 import * as productController from "../controllers/product";
 import { Product } from "../models/product";
 import { authMiddleware } from "../middleware/auth";
+import * as productSchema from "../validation/product.schema";
 
 const router = express.Router();
 
@@ -22,13 +21,16 @@ router.get("/:id", async (req: any, res: Response) => {
 
 router.post("/", authMiddleware, async (req: any, res: Response) => {
   const { user } = req.auth || {};
+  await productSchema.create.validate(req.body, { abortEarly: false });
   const product: Product = await productController.create(user, req.body);
   res.json(product);
 });
 
 // TODO: This should be a PATCH
+// Keeping it as a PUT because thats what the requirements say
 router.put("/", authMiddleware, async (req: any, res: Response) => {
   const { user } = req.auth || {};
+  await productSchema.update.validate(req.body, { abortEarly: false });
   const { id } = req.body;
   if (!id || !user) {
     throw new Error("Product id is required");
