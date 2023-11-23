@@ -4,12 +4,13 @@ import { acceptOnlyJson } from "./middleware/headers";
 import router from "./routes/index";
 import cors from "cors";
 import errorHandlingMiddleware from "./middleware/errorHandling";
+import config from "./utils/config";
 
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000"], 
-  thods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: [config.feUrl], 
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
 
