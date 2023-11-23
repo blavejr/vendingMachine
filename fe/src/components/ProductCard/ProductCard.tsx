@@ -40,6 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Card.Body>
         <Card.Title>{productName}</Card.Title>
         <Card.Text>sellerId: {sellerId}</Card.Text>
+        <Card.Text>productId: {id}</Card.Text>
         <Card.Text>Available: {amountAvailable}</Card.Text>
       </Card.Body>
       <ListGroup className="list-group-flush">
