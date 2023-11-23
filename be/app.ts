@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
-import { authMiddleware } from "./middleware/auth";
 import { acceptOnlyJson } from "./middleware/headers";
 import { connectMongoDB } from "./models/index";
 import router from "./routes/index";
@@ -32,6 +31,4 @@ app.use(router);
 // Custom error-handling middleware
 app.use(globalErrorHandler);
 
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
-});
+export default app;
