@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import productsAPI from "../../api/product";
-import { read } from "../../utils/localStorage";
+import { read, write } from "../../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import VMNavbar from "../../components/VMNavbar/VMNavbar";
@@ -47,6 +47,7 @@ export default function Home() {
       .getUser(user?.id)
       .then((res) => {
         setUser(res);
+        write("user", res);
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +60,7 @@ export default function Home() {
       <Row>
         {products &&
           products?.items?.map((product: Product) => (
-            <Col md={4}>
+            <Col lg={3} md={6} xs={12}>
               <ProductCard {...product} userId={user?.id} userRole={user?.role}/>
             </Col>
           ))}
