@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import productsAPI from "../../api/product";
+import buyAPI from "../../api/buy";
 import { read, write } from "../../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
@@ -54,6 +55,22 @@ export default function Home() {
       });
   }, []);
 
+  const handleBuy = (productCost: number, productId: string) => {
+    if (user.role === "seller" && user.deposit > productCost) {
+      return alert("You cannot buy with seller account");
+    }
+    buyAPI
+      .create(productId, 1)
+      .then((res) => {
+        alert("Product bought successfully");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error buying product");
+      });
+  };
+
   return (
     <div>
       <VMNavbar username={user?.name} deposit={user?.deposit} role={user?.role} />
@@ -61,7 +78,7 @@ export default function Home() {
         {products &&
           products?.items?.map((product: Product) => (
             <Col lg={3} md={6} xs={12}>
-              <ProductCard {...product} userId={user?.id} userRole={user?.role}/>
+              <ProductCard {...product} userId={user?.id} userRole={user?.role} handleBuy={handleBuy}/>
             </Col>
           ))}
       </Row>

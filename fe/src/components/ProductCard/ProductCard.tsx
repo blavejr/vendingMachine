@@ -15,6 +15,7 @@ interface ProductCardProps {
   userId: string;
   userRole?: string;
   image?: string;
+  handleBuy: (productCost: number, productId: string) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -26,22 +27,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   sellerId = "@seller",
   userRole = "buyer",
   image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimg.com%2Fuploads%2Fcocacola%2Fcoca_cola_PNG8910.png&f=1&nofb=1&ipt=b64e2024e140993ad84936b2c6974c0c6dc58d775dc2a7b89f436c6398044c72&ipo=images",
+  handleBuy,
 }) => {
-  const handleBuy = () => {
-    if (userRole === "seller") {
-      return alert("You cannot buy with seller account");
-    }
-    buyAPI
-      .create(id, 1)
-      .then((res) => {
-        console.log(res);
-        alert("Product bought successfully");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     <Card className={cx(styles.productCard, "my-2")} style={{ width: "18rem" }}>
       <Card.Img
@@ -59,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <ListGroup.Item>Price: N${cost}</ListGroup.Item>
       </ListGroup>
       <Card.Body>
-        <Card.Link onClick={handleBuy} className="mx-2">
+        <Card.Link onClick={(e)=>handleBuy(cost, id)} className="mx-2">
           Buy
         </Card.Link>
         {userRole === "seller" && sellerId === userId && (
