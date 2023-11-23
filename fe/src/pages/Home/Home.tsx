@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import VMNavbar from "../../components/VMNavbar/VMNavbar";
 import cx from "classnames";
+import loading from "../../loading.jpg";
 
 interface Product {
   id: string;
@@ -42,7 +43,6 @@ export default function Home() {
       });
   }, []);
 
-
   useEffect(() => {
     userAPI
       .getUser(user?.id)
@@ -73,14 +73,26 @@ export default function Home() {
 
   return (
     <div>
-      <VMNavbar username={user?.name} deposit={user?.deposit} role={user?.role} />
+      <VMNavbar
+        username={user?.name}
+        deposit={user?.deposit}
+        role={user?.role}
+      />
       <Row>
-        {products &&
+        {!products || !products?.items ? (
+          <img src={loading} alt="loading animation" />
+        ) : (
           products?.items?.map((product: Product) => (
             <Col lg={3} md={6} xs={12}>
-              <ProductCard {...product} userId={user?.id} userRole={user?.role} handleBuy={handleBuy}/>
+              <ProductCard
+                {...product}
+                userId={user?.id}
+                userRole={user?.role}
+                handleBuy={handleBuy}
+              />
             </Col>
-          ))}
+          ))
+        )}
       </Row>
     </div>
   );
