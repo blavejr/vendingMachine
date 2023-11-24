@@ -11,7 +11,7 @@ setup should be as simple as running one command `docker-compose up`
         - `npm run test:dev`
 - backend -> Nodejs and Express -> (http://localhost:3001/)
     - tests
-        - `npm run test`
+        - `npm run test:dev`
 - database -> MongoDB (port 27017)
     - migrations
         - I will try if I have time to add some
