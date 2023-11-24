@@ -24,6 +24,25 @@ setup should be as simple as running one command `docker-compose up`
 
 # Postman
 Postman collection is included in the backend as a json file that can be imported into postman
+- `be/postman/vendingMachine.postman_collection.json`
+
+### Testing
+#### NB: Run login route first to setup env variables
+- I have taken the time to write a simple postman script to automatically add the token on login to a variable which can be set globally in auth and have all other requests inherit from there
+
+```
+const response = pm.response.json();
+const jwtToken = response.token;
+
+pm.environment.set('jwtToken', jwtToken);
+```
+
+pre-script for adding some variables needed for the postman collection can also be put on the login route
+
+```
+pm.environment.set('be_Host', "http://localhost:3001");
+pm.environment.set('fe_Host', "http://localhost:3000");
+````
 
 # Authentication
 ### Basic authentication

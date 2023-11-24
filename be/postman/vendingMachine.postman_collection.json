@@ -13,16 +13,11 @@
 					"name": "user",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "123",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "123",
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVjYjViMTZmMjFiYzk0MjhhNjkzNzciLCJzZXNzaW9uSWQiOiI2NTYwOTE4NzA0Y2I1ZjlkMzU1OWUyNWQiLCJpYXQiOjE3MDA4Mjc1MjcsImV4cCI6MTcwMzQxOTUyN30.jqAGMFC13LIPjSGs73Mjx6fwBAdOSshMYOc26HLv24Y",
 									"type": "string"
 								}
 							]
@@ -31,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ino Ati\",\n    \"username\": \"testuser23\"\n}",
+							"raw": "{\n    \"name\": \"Selling Guy21\",\n    \"username\": \"isell\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -39,12 +34,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{be_Host}}user/655bc07c9c59f05b42eedf84",
+							"raw": "{{be_Host}}user",
 							"host": [
 								"{{be_Host}}user"
-							],
-							"path": [
-								"655bc07c9c59f05b42eedf84"
 							]
 						}
 					},
@@ -126,21 +118,6 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "123",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "isell",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -239,6 +216,32 @@
 				},
 				{
 					"name": "user login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"const jwtToken = response.token;",
+									"",
+									"pm.environment.set('jwtToken', jwtToken);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"pm.environment.set('be_Host', \"http://localhost:3001\");",
+									"pm.environment.set('fe_Host', \"http://localhost:3000\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -284,12 +287,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}user/",
+							"raw": "{{be_Host}}/user",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
 							],
 							"path": [
-								""
+								"user"
 							]
 						}
 					},
@@ -412,12 +415,9 @@
 							"raw": "{\n    \"amountAvailable\": 40,\n    \"cost\": 10,\n    \"productName\": \"chips\"\n}"
 						},
 						"url": {
-							"raw": "{{be_Host}}product/",
+							"raw": "{{be_Host}}product",
 							"host": [
 								"{{be_Host}}product"
-							],
-							"path": [
-								""
 							]
 						}
 					},
@@ -571,7 +571,7 @@
 							"basic": [
 								{
 									"key": "username",
-									"value": "asell",
+									"value": "abuy",
 									"type": "string"
 								},
 								{
@@ -585,7 +585,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"amount\": 1,\n    \"product_id\": \"655e97057bdb1c39d652da03\"\n}",
+							"raw": "{\n    \"amount\": 1,\n    \"product_id\": \"655e66375d4cbe60c8c5d397\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -603,8 +603,70 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "buy",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "isell",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{be_Host}}buy/",
+							"host": [
+								"{{be_Host}}buy"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
