@@ -5,6 +5,7 @@ import router from "./routes/index";
 import cors from "cors";
 import errorHandlingMiddleware from "./middleware/errorHandling";
 import config from "./utils/config";
+import { jwtAuthMiddleware } from "./middleware/auth";
 
 const app = express();
 
@@ -16,6 +17,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(acceptOnlyJson);
+app.use(jwtAuthMiddleware);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

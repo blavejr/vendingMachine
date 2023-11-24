@@ -8,6 +8,7 @@ import config from "../utils/config";
 import { Request } from "express";
 import { Jwt } from "jsonwebtoken";
 import moment from "moment";
+import jwtWhiteList from "../utils/jwtWhiteList";
 
 async function basicAuthorize(
   username: string,
@@ -83,9 +84,10 @@ export const basicAuthMiddleware = basicAuth({
   unauthorizedResponse: getUnauthorizedResponse,
 });
 
-// TODO: Authentication with JWT works but I want to check that the session is valid
+// all routes require jwt authentication unless they are in the whitelist
 export const jwtAuthMiddleware = expressjwt({
   secret: config.jwt.secret,
   algorithms: ["HS256"],
   isRevoked: jwtAuthorize,
-});
+})
+.unless({ path: jwtWhiteList });

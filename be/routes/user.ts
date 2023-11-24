@@ -2,20 +2,20 @@ import express from "express";
 import * as userController from "../controllers/user";
 import * as sessionController from "../controllers/session";
 import { User } from "../models/user";
-import { basicAuthMiddleware, jwtAuthMiddleware } from "../middleware/auth";
+import { basicAuthMiddleware } from "../middleware/auth";
 import * as userSchema from "../validation/users.schema";
 
 const router = express.Router();
 
 router
   // Users can reset their deposits
-  .get("/reset/deposit", jwtAuthMiddleware, async (req: any, res) => {
+  .get("/reset/deposit", async (req: any, res) => {
     const { userId } = req.auth;
     const user: User = await userController.resetDeposit(userId);
     res.json(user);
   })
   // users cam reset their sessions
-  .get("/reset/sessions", jwtAuthMiddleware, async (req: any, res) => {
+  .get("/reset/sessions", async (req: any, res) => {
     const { userId } = req.auth;
     const session: any = await sessionController.deleteAll(userId);
     res.json({
@@ -36,7 +36,7 @@ router
     res.json({ ...loggedInUser, token: session.token });
   })
   // Users can only get other users, should be admin only
-  .get("/:id", jwtAuthMiddleware, async (req, res) => {
+  .get("/:id", async (req, res) => {
     const user: User = await userController.get(req.params.id);
     res.json(user);
   })
@@ -47,14 +47,14 @@ router
     res.json(user);
   })
   // Users can only update themselves
-  .patch("/", jwtAuthMiddleware, async (req: any, res) => {
+  .patch("/", async (req: any, res) => {
     const { userId } = req.auth;
     await userSchema.update.validate(req.body, { abortEarly: false });
     const updatedUser: User = await userController.update(userId, req.body);
     res.json(updatedUser);
   })
   // Users can only delete themselves
-  .delete("/", jwtAuthMiddleware, async (req: any, res) => {
+  .delete("/", async (req: any, res) => {
     const { userId } = req.auth;
     const user: User = await userController.delete_(userId);
     res.json(user);
