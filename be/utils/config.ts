@@ -18,6 +18,10 @@ const config = {
   serverPort: parseInt(process.env.PORT!, 10) || 3001,
   mongodbUri: process.env.MONGODB_URI!,
   feUrl: process.env.FE_URL!,
+  jwt: {
+    secret: process.env.JWT_SECRET!,
+    expiresIn: process.env.JWT_EXPIRES_IN!,
+  },
 } as const;
 
 validateEnvVariables();

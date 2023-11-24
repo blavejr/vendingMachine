@@ -2,15 +2,17 @@ import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 import bcrypt from "bcrypt";
 import validationMessages from "../validation/messages.schema";
+import jwt from "jsonwebtoken";
 
-export async function login(username: string): Promise<any> {
+export async function findByUserName(username: string): Promise<any> {
+  // find the authenticated user
   const user = await UserModel.findOne({ username: username });
-
   if (!user) {
     throw new Error(validationMessages.user.notFound.message);
   }
+  const formattedUser = formatUser(user);
 
-  return { ...formatUser(user), password: undefined };
+  return { ...formattedUser, password: undefined };
 }
 
 export async function get(id: string): Promise<any> {
@@ -31,23 +33,19 @@ export async function getAll(): Promise<any> {
 }
 
 export async function create(user: User): Promise<any> {
-    const newUser = new UserModel({
-      ...user,
-      password: await hashPassword(user.password),
-    });
-    await newUser.save();
-    const formattedUser = formatUser(newUser, true);
-    return { ...formattedUser, password: undefined };
+  const newUser = new UserModel({
+    ...user,
+    password: await hashPassword(user.password),
+  });
+  await newUser.save();
+  const formattedUser = formatUser(newUser, true);
+  return { ...formattedUser, password: undefined };
 }
 
-export async function update(username: string, user: User): Promise<any> {
-  const updatedUser = await UserModel.findOneAndUpdate(
-    {username: username},
-    user,
-    {
-      new: true,
-    }
-  );
+export async function update(userId: string, user: User): Promise<any> {
+  const updatedUser = await UserModel.findByIdAndUpdate(userId, user, {
+    new: true,
+  });
 
   return { ...formatUser(updatedUser!), password: undefined };
 }

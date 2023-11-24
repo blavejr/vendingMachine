@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import * as depositController from "../controllers/deposit";
 import { User } from "../models/user";
-import { authMiddleware } from "../middleware/auth";
+import { jwtAuthMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
-router.patch("/", authMiddleware, async (req:any, res: Response) => {
+router.patch("/", jwtAuthMiddleware, async (req:any, res: Response) => {
   const { deposit } = req.body || 0;
   const { user } = req.auth || null;
 

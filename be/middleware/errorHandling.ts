@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+import { UnauthorizedError } from "express-jwt";
 import { ValidationError } from "yup";
+import * as statusCodes from "../validation/statusCodes";
 
 export default function errorHandlingMiddleware(
   error: any,
@@ -7,14 +9,33 @@ export default function errorHandlingMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  if (error instanceof ValidationError) {
+  switch (true) {
     // Yup validation errors
-    res.status(400).json({ error: "Validation Error", details: error.errors });
-  } else if (error instanceof Error && error.message === "User not found") {
+    case error instanceof ValidationError:
+      res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ error: "Validation Error", details: error.errors });
+      break;
+
+    // JWT authentication error
+    case error instanceof UnauthorizedError:
+      console.log(error);
+      res
+        .status(statusCodes.UNAUTHORIZED)
+        .json({ error: "Unauthorized Error", message: error.message });
+      break;
+
     // Specific error handling
-    res.status(404).json({ error: "User not found" });
-  } else {
+    case error instanceof Error && error.message === "User not found":
+      res.status(statusCodes.NOT_FOUND).json({ error: "User not found" });
+      break;
+
     // Generic error handling
-    res.status(500).json({ error: "Internal Server Error" });
+    default:
+      console.error(error);
+      res
+        .status(statusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+      break;
   }
 }
