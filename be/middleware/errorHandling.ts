@@ -19,7 +19,6 @@ export default function errorHandlingMiddleware(
 
     // JWT authentication error
     case error instanceof UnauthorizedError:
-      console.log(error);
       res
         .status(statusCodes.UNAUTHORIZED)
         .json({ error: "Unauthorized Error", message: error.message });
@@ -32,7 +31,6 @@ export default function errorHandlingMiddleware(
 
     // Generic error handling
     default:
-      console.error(error);
       res
         .status(statusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
