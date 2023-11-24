@@ -34,9 +34,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{be_Host}}user",
+							"raw": "{{be_Host}}/user",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
+							],
+							"path": [
+								"user"
 							]
 						}
 					},
@@ -69,11 +72,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{be_Host}}user/655bc07c9c59f05b42eedf84",
+							"raw": "{{be_Host}}/user/655bc07c9c59f05b42eedf84",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
 							],
 							"path": [
+								"user",
 								"655bc07c9c59f05b42eedf84"
 							]
 						}
@@ -104,9 +108,12 @@
 							"raw": "{\n    \"name\": \"Another BuyerMan\",\n    \"username\": \"abuy\",\n    \"password\": 123,\n    \"deposit\": 100,\n    \"role\": \"buyer\"\n}"
 						},
 						"url": {
-							"raw": "{{be_Host}}user",
+							"raw": "{{be_Host}}/user",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
+							],
+							"path": [
+								"user"
 							]
 						}
 					},
@@ -144,11 +151,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}user/655cb5b16f21bc9428a69377",
+							"raw": "{{be_Host}}/user/655cb5b16f21bc9428a69377",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
 							],
 							"path": [
+								"user",
 								"655cb5b16f21bc9428a69377"
 							]
 						}
@@ -202,11 +210,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}user/reset/",
+							"raw": "{{be_Host}}/user/reset/",
 							"host": [
-								"{{be_Host}}user"
+								"{{be_Host}}"
 							],
 							"path": [
+								"user",
 								"reset",
 								""
 							]
@@ -333,9 +342,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{be_Host}}product",
+							"raw": "{{be_Host}}/product",
 							"host": [
-								"{{be_Host}}product"
+								"{{be_Host}}"
+							],
+							"path": [
+								"product"
 							]
 						}
 					},
@@ -368,11 +380,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{be_Host}}product/655bf4ffc95ed905c5a36e4d",
+							"raw": "{{be_Host}}/product/655bf4ffc95ed905c5a36e4d",
 							"host": [
-								"{{be_Host}}product"
+								"{{be_Host}}"
 							],
 							"path": [
+								"product",
 								"655bf4ffc95ed905c5a36e4d"
 							]
 						}
@@ -415,9 +428,12 @@
 							"raw": "{\n    \"amountAvailable\": 40,\n    \"cost\": 10,\n    \"productName\": \"chips\"\n}"
 						},
 						"url": {
-							"raw": "{{be_Host}}product",
+							"raw": "{{be_Host}}/product",
 							"host": [
-								"{{be_Host}}product"
+								"{{be_Host}}"
+							],
+							"path": [
+								"product"
 							]
 						}
 					},
@@ -458,11 +474,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}product/655c8df53d9444c9a6608a67",
+							"raw": "{{be_Host}}/product/655c8df53d9444c9a6608a67",
 							"host": [
-								"{{be_Host}}product"
+								"{{be_Host}}"
 							],
 							"path": [
+								"product",
 								"655c8df53d9444c9a6608a67"
 							]
 						}
@@ -504,11 +521,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}product/",
+							"raw": "{{be_Host}}/product/",
 							"host": [
-								"{{be_Host}}product"
+								"{{be_Host}}"
 							],
 							"path": [
+								"product",
 								""
 							]
 						}
@@ -550,9 +568,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{be_Host}}deposit",
+							"raw": "{{be_Host}}/deposit",
 							"host": [
-								"{{be_Host}}deposit"
+								"{{be_Host}}"
+							],
+							"path": [
+								"deposit"
 							]
 						}
 					},
@@ -593,11 +614,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{be_Host}}buy/",
+							"raw": "{{be_Host}}/buy/",
 							"host": [
-								"{{be_Host}}buy"
+								"{{be_Host}}"
 							],
 							"path": [
+								"buy",
 								""
 							]
 						}
@@ -625,11 +647,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{be_Host}}buy/",
+							"raw": "{{be_Host}}/buy/",
 							"host": [
-								"{{be_Host}}buy"
+								"{{be_Host}}"
 							],
 							"path": [
+								"buy",
 								""
 							]
 						}
