@@ -25,6 +25,14 @@ setup should be as simple as running one command `docker-compose up`
 # Postman
 Postman collection is included in the backend as a json file that can be imported into postman
 
+# Authentication
+### Basic authentication
+    - login
+### JWT Bearer token authentication
+    - All other routes except for registration
+## Session management
+- I have deployed a simple session management system, sessions are saved in the mongoDB as JS objects, sessions do not contain tokens but a have userID, device info and a sessionID if a token has an id that does not match even if its a valid token it will be rejected, if the id is in one of the session objects in the db but its the device info does not match it will be rejected or it should behave like this if I have time to implement it
+
 # Deliverables
 
 ### User Model and Authentication:
