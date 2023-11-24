@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "4f611b3e-1a54-4635-8e1a-1cea304bff64",
 		"name": "vendingMachine",
+		"description": "These are basic API docs for the application, it is still in active development so some functionalitty might change but I will try and keep it up to date",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "1982435"
 	},
@@ -12,21 +13,11 @@
 				{
 					"name": "user",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVjYjViMTZmMjFiYzk0MjhhNjkzNzciLCJzZXNzaW9uSWQiOiI2NTYwOTE4NzA0Y2I1ZjlkMzU1OWUyNWQiLCJpYXQiOjE3MDA4Mjc1MjcsImV4cCI6MTcwMzQxOTUyN30.jqAGMFC13LIPjSGs73Mjx6fwBAdOSshMYOc26HLv24Y",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Selling Guy21\",\n    \"username\": \"isell\"\n}",
+							"raw": "{\n    \"name\": \"Selling Guy22\",\n    \"username\": \"isell\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -80,7 +71,8 @@
 								"user",
 								"655bc07c9c59f05b42eedf84"
 							]
-						}
+						},
+						"description": "Authenticated user can delete thier user account"
 					},
 					"response": []
 				},
@@ -115,7 +107,8 @@
 							"path": [
 								"user"
 							]
-						}
+						},
+						"description": "user can create an account"
 					},
 					"response": []
 				},
@@ -159,31 +152,17 @@
 								"user",
 								"655cb5b16f21bc9428a69377"
 							]
-						}
+						},
+						"description": "authenticated user can request to view any other users information"
 					},
 					"response": []
 				},
 				{
-					"name": "user reset",
+					"name": "session reset",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "isell",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "123",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -210,16 +189,64 @@
 							]
 						},
 						"url": {
-							"raw": "{{be_Host}}/user/reset/",
+							"raw": "{{be_Host}}/user/reset/sessions",
 							"host": [
 								"{{be_Host}}"
 							],
 							"path": [
 								"user",
 								"reset",
+								"sessions"
+							]
+						},
+						"description": "Authenticated user can revoke all thier sessions"
+					},
+					"response": []
+				},
+				{
+					"name": "user reset",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "63a07c347350cca360256638",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "234234234",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{be_Host}}/user/reset/deposit/",
+							"host": [
+								"{{be_Host}}"
+							],
+							"path": [
+								"user",
+								"reset",
+								"deposit",
 								""
 							]
-						}
+						},
+						"description": "Authenticated user can reset their deposit to 0"
 					},
 					"response": []
 				},
@@ -303,11 +330,13 @@
 							"path": [
 								"user"
 							]
-						}
+						},
+						"description": "users can authenticate with basic auth"
 					},
 					"response": []
 				}
-			]
+			],
+			"description": "API endpoints to work with user data"
 		},
 		{
 			"name": "products",
@@ -349,7 +378,8 @@
 							"path": [
 								"product"
 							]
-						}
+						},
+						"description": "Authenticated user can update a product"
 					},
 					"response": []
 				},
@@ -388,7 +418,8 @@
 								"product",
 								"655bf4ffc95ed905c5a36e4d"
 							]
-						}
+						},
+						"description": "Authenticated user can delete a product"
 					},
 					"response": []
 				},
@@ -435,7 +466,8 @@
 							"path": [
 								"product"
 							]
-						}
+						},
+						"description": "Authenticated user can create a product"
 					},
 					"response": []
 				},
@@ -482,7 +514,8 @@
 								"product",
 								"655c8df53d9444c9a6608a67"
 							]
-						}
+						},
+						"description": "Authenticated user can get a specific product"
 					},
 					"response": []
 				},
@@ -529,7 +562,8 @@
 								"product",
 								""
 							]
-						}
+						},
+						"description": "Authenticated user can get all products"
 					},
 					"response": []
 				}
@@ -575,7 +609,8 @@
 							"path": [
 								"deposit"
 							]
-						}
+						},
+						"description": "Authenticated user can update deposit amount"
 					},
 					"response": []
 				}
@@ -622,7 +657,8 @@
 								"buy",
 								""
 							]
-						}
+						},
+						"description": "Authenticated user can create a buy transaction against a product"
 					},
 					"response": []
 				},
@@ -655,7 +691,8 @@
 								"buy",
 								""
 							]
-						}
+						},
+						"description": "Authenticated user can get all their buy transactions"
 					},
 					"response": []
 				}

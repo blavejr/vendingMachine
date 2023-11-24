@@ -39,3 +39,10 @@ export async function create(
 
   return { ...newSession.toObject(), token };
 }
+
+export async function deleteAll(userId: Types.ObjectId): Promise<any> {
+  const session = await SessionModel.deleteMany({
+    userId
+  });
+  return session;
+}

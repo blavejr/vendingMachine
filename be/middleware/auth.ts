@@ -1,15 +1,19 @@
 import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
 import { comparePasswords } from "../controllers/user";
 import UserModel, { User } from "../models/user";
+import SessionModel, { Session } from "../models/session";
 import validationMessages from "../validation/messages.schema";
 import { expressjwt } from "express-jwt";
 import config from "../utils/config";
+import { Request } from "express";
+import { Jwt } from "jsonwebtoken";
+import moment from "moment";
 
-async function authorize(
+async function basicAuthorize(
   username: string,
   password: string,
   cb: Function
-): Promise<Boolean> {
+): Promise<boolean> {
   const userDocument = await UserModel.findOne({ username: username });
 
   if (!userDocument) {
@@ -28,6 +32,39 @@ async function authorize(
   }
 }
 
+async function jwtAuthorize(
+  req: Request,
+  token: Jwt | undefined
+): Promise<boolean> {
+  const { userId, sessionId } = token?.payload as {
+    userId: string;
+    sessionId: string;
+  };
+
+  const userAgent = req.headers["user-agent"];
+
+  const sessionDocument = await SessionModel.findOne({
+    _id: sessionId,
+    deviceInfo: userAgent,
+    userId,
+  });
+  // if no session is found, revoke it
+  if (!sessionDocument) {
+    return true;
+  }
+
+  const session = sessionDocument?.toObject();
+
+  // if the session is expired, revoke it
+  if (moment(session.expirationDate).isBefore(moment())) {
+    console.log(moment(session.expirationDate).isBefore(moment()));
+
+    return true;
+  }
+  // if no errors, don't revoke it
+  return false;
+}
+
 function getUnauthorizedResponse(req: IBasicAuthedRequest) {
   return req.auth
     ? {
@@ -41,7 +78,7 @@ function getUnauthorizedResponse(req: IBasicAuthedRequest) {
 }
 
 export const basicAuthMiddleware = basicAuth({
-  authorizer: authorize,
+  authorizer: basicAuthorize,
   authorizeAsync: true,
   unauthorizedResponse: getUnauthorizedResponse,
 });
@@ -50,4 +87,5 @@ export const basicAuthMiddleware = basicAuth({
 export const jwtAuthMiddleware = expressjwt({
   secret: config.jwt.secret,
   algorithms: ["HS256"],
+  isRevoked: jwtAuthorize,
 });

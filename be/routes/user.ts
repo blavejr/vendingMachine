@@ -8,37 +8,55 @@ import * as userSchema from "../validation/users.schema";
 const router = express.Router();
 
 router
-  .get("/reset", jwtAuthMiddleware, async (req: any, res) => {
-    const user: User = await userController.resetDeposit(req.auth.user);
+  // Users can reset their deposits
+  .get("/reset/deposit", jwtAuthMiddleware, async (req: any, res) => {
+    const { userId } = req.auth;
+    const user: User = await userController.resetDeposit(userId);
     res.json(user);
   })
-  // TODO: login controller should issue a new session
+  // users cam reset their sessions
+  .get("/reset/sessions", jwtAuthMiddleware, async (req: any, res) => {
+    const { userId } = req.auth;
+    const session: any = await sessionController.deleteAll(userId);
+    res.json({
+      message: "All sessions deleted",
+      count: session.deletedCount,
+    });
+  })
+
   .get("/", basicAuthMiddleware, async (req: any, res) => {
-    const {user} = req.auth;
+    const { user } = req.auth;
     const { headers } = req;
 
     const loggedInUser: User = await userController.findByUserName(user);
-    const session = await sessionController.create(loggedInUser.id, headers['user-agent']);
-    // session id must be the same as user id
-    res.json({...loggedInUser, token:session.token});
+    const session = await sessionController.create(
+      loggedInUser.id,
+      headers["user-agent"]
+    );
+    res.json({ ...loggedInUser, token: session.token });
   })
+  // Users can only get other users, should be admin only
   .get("/:id", jwtAuthMiddleware, async (req, res) => {
     const user: User = await userController.get(req.params.id);
     res.json(user);
   })
+  // Users can create themselves
   .post("/", async (req, res) => {
     await userSchema.create.validate(req.body, { abortEarly: false });
     const user: User = await userController.create(req.body);
     res.json(user);
   })
+  // Users can only update themselves
   .patch("/", jwtAuthMiddleware, async (req: any, res) => {
-    const {userId} = req.auth;
+    const { userId } = req.auth;
     await userSchema.update.validate(req.body, { abortEarly: false });
     const updatedUser: User = await userController.update(userId, req.body);
     res.json(updatedUser);
   })
-  .delete("/:id", jwtAuthMiddleware, async (req, res) => {
-    const user: User = await userController.delete_(req.params.id);
+  // Users can only delete themselves
+  .delete("/", jwtAuthMiddleware, async (req: any, res) => {
+    const { userId } = req.auth;
+    const user: User = await userController.delete_(userId);
     res.json(user);
   });
 
