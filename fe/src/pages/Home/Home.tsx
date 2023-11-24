@@ -23,15 +23,12 @@ interface Product {
 }
 
 export default function Home() {
-  const [user, setUser] = React.useState<any>(read("user") || null);
+  const [userId, setUserId] = React.useState<any>(read("userId") || null);
+  const [user, setUser] = React.useState<any>({});
   const [products, setProducts] = React.useState<any>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user === null) {
-      navigate("/");
-    }
-
     // Load all products
     productsAPI
       .getAll()
@@ -45,10 +42,9 @@ export default function Home() {
 
   useEffect(() => {
     userAPI
-      .getUser(user?.id)
+      .getUser(userId)
       .then((res) => {
         setUser(res);
-        write("user", res);
       })
       .catch((err) => {
         console.log(err);
@@ -73,9 +69,7 @@ export default function Home() {
 
   return (
     <div>
-      <VMNavbar
-        {...user}
-      />
+      <VMNavbar {...user} />
       <Row>
         {!products || !products?.items ? (
           <img src={loading} alt="loading animation" />

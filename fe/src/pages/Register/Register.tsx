@@ -45,23 +45,22 @@ function Register() {
   }
 
   const handleSubmit = (values: FormValues, { setSubmitting }: any) => {
-    userAPI.register({
-      name: `${values.firstName} ${values.lastName}`,
-      username: values.username,
-      password: values.password,
-      role: values.role ? "seller" : "buyer",
-      deposit: 0,
-    }).then((res) => {
-      // save token to local storage
-      // TODO: Save a JWT token from the response instead but for now this works
-      setToken(res.username, values.password);
-      navigate("/home")
-    }).catch((err) => {
-      console.log(err);
-    });
-    
+    userAPI
+      .register({
+        name: `${values.firstName} ${values.lastName}`,
+        username: values.username,
+        password: values.password,
+        role: values.role ? "seller" : "buyer",
+        deposit: 0,
+      })
+      .then((res) => {
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     setSubmitting(false);
-    
   };
 
   return (

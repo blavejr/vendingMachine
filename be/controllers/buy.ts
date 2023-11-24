@@ -3,12 +3,12 @@ import UserModel, { User } from "../models/user";
 import ProductModel, { Product } from "../models/product";
 import validationMessages from "../validation/messages.schema";
 import { Roles } from "../utils/user";
+import { Types } from "mongoose";
 
 // Promise<Buy[]>
-export async function getAll(username: string): Promise<Buy[]> {
-  // TODO: also use populate in product controller when getting all products
+export async function getAll(userId: Types.ObjectId): Promise<Buy[]> {
   const purchases = await BuyModel.find({
-    buyerId: (await UserModel.findOne({ username }))?.toObject()!.id,
+    buyerId: (await UserModel.findById(userId))?.toObject()!.id,
   }).populate("productId");
   return purchases;
 }
@@ -16,14 +16,22 @@ export async function getAll(username: string): Promise<Buy[]> {
 export async function create(
   product_id: string,
   amount: number,
-  username: string
+  userId: Types.ObjectId
 ): Promise<Buy> {
-  const buyer = (await UserModel.findOne({ username }))?.toObject()!;
+  const buyer = (await UserModel.findById(userId))?.toObject()!;
   const product = (await ProductModel.findById(product_id))?.toObject()!;
   const seller = (await UserModel.findById(product.sellerId))?.toObject()!;
 
-  if (!buyer || buyer.role !== Roles.BUYER || !product || !seller) {
+  if (!buyer || !seller) {
     throw new Error(validationMessages.user.notFound.message);
+  }
+
+  if (buyer.role !== Roles.BUYER) {
+    throw new Error(validationMessages.user.notBuyer.message);
+  }
+
+  if (!product) {
+    throw new Error(validationMessages.product.notFound.message);
   }
 
   const session = await UserModel.startSession();

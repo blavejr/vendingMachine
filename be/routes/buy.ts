@@ -6,14 +6,14 @@ const router = express.Router();
 
 router
 .get("/", async (req: any, res) => {
-  const { user } = req.auth || null;
-  const purchases = await buyController.getAll(user);
+  const { userId } = req.auth;
+  const purchases = await buyController.getAll(userId);
   res.json(purchases);
 })
 .post("/", async (req: any, res) => {
-  const { product_id, amount } = req.body || null;
-  const { user } = req.auth || null;
-  const purchase = await buyController.create(product_id, amount, user);
+  const { product_id, amount } = req.body;
+  const { userId } = req.auth;
+  const purchase = await buyController.create(product_id, amount, userId);
   res.json(purchase);
 });
 

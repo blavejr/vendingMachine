@@ -1,9 +1,10 @@
 import UserModel, { User } from "../models/user";
 import { formatUser } from "../utils/user";
 import validationMessages from "../validation/messages.schema";
+import { Types } from "mongoose";
 
-export async function update(username: string, deposit: number): Promise<User> {
-  const currentUser = await UserModel.findOne({ username: username });
+export async function update(userId: Types.ObjectId , deposit: number): Promise<User> {
+  const currentUser = await UserModel.findById(userId);
 
 //   TODO: create an error class that takes a message and a status code
   if (!currentUser) {
@@ -19,7 +20,7 @@ export async function update(username: string, deposit: number): Promise<User> {
     deposit: deposit + currentUser.deposit,
     updated_at: new Date(),
   };
-  // TODO: no need to find current user first, just use findOneAndUpdate
+  
   const updatedUser = await UserModel.findByIdAndUpdate(
     currentUser.id,
     newUser,

@@ -4,12 +4,27 @@ import { read } from "../utils/localStorage";
 const api = axios.create({
   baseURL: "http://localhost:3001",
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${read("token")}`,
+  },
 });
-
+// Add a request interceptor
 api.interceptors.request.use(
-  (config) => {
-    const basicAuthCredentials = read('token');
-    config.headers['Authorization'] = `Basic ${basicAuthCredentials}`;
+  (config: any) => {
+    if (
+      config.headers &&
+      config.headers.Authorization &&
+      config.headers.Authorization !== "Bearer null"
+    ) {
+      return config;
+    }
+
+    const token = read("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => {
@@ -17,8 +32,8 @@ api.interceptors.request.use(
   }
 );
 
-export const get = async (url: string): Promise<any> => {
-  const response: AxiosResponse = await api.get(url);
+export const get = async (url: string, options: any = null): Promise<any> => {
+  const response: AxiosResponse = await api.get(url, options);
   return response;
 };
 

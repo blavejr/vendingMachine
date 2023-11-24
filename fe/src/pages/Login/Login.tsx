@@ -9,7 +9,7 @@ import { setToken, write } from "../../utils/localStorage";
 import userAPI from "../../api/user";
 import { useNavigate } from "react-router-dom";
 
-function FormExample() {
+function LoginPage() {
   const { Formik } = formik;
   const navigate = useNavigate();
 
@@ -23,17 +23,16 @@ function FormExample() {
       validationSchema={schema}
       onSubmit={(values) => {
         console.log(values);
-        setToken(values.username, values.password);
-        userAPI.login().then((res) => {
-          console.log(res);
-          // TODO: Save a JWT token from the response instead but for now this works
-          write('user', res)
-          navigate("/home");
-        }
-        ).catch((err) => {
-          console.log(err);
-        });
-        setToken(values.username, values.password);
+        userAPI
+          .login(values.username, values.password)
+          .then((res) => {
+            setToken(res.token);
+            write("userId", res.id);
+            navigate("/home");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }}
       initialValues={{
         password: "",
@@ -74,11 +73,13 @@ function FormExample() {
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
           </Row>
-          <Button type="submit" disabled={!isValid}>Login</Button>
+          <Button type="submit" disabled={!isValid}>
+            Login
+          </Button>
         </Form>
       )}
     </Formik>
   );
 }
 
-export default FormExample;
+export default LoginPage;

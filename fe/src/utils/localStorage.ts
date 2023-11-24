@@ -6,9 +6,9 @@ export const write = (key: string, value: any) => {
   }
 };
 
-export const setToken = (userName: string, password: string) => {
+export const setToken = (token: string) => {
   try {
-    localStorage.setItem("token", btoa(`${userName}:${password}`));
+    localStorage.setItem("token", token);
   } catch (error) {
     console.error("Error writing to localStorage:", error);
   }

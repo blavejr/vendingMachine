@@ -25,12 +25,18 @@ export default function errorHandlingMiddleware(
       break;
 
     // Specific error handling
+    // TODO: Add an error class to format these better thab relying on the message
     case error instanceof Error && error.message === "User not found":
       res.status(statusCodes.NOT_FOUND).json({ error: "User not found" });
       break;
 
+    case error instanceof Error && error.message === "User not a buyer":
+      res.status(statusCodes.NOT_FOUND).json({ error: "User not a buyer" });
+      break;
+
     // Generic error handling
     default:
+      console.error(error);
       res
         .status(statusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });

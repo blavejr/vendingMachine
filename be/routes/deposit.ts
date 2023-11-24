@@ -6,13 +6,13 @@ const router = express.Router();
 
 router.patch("/", async (req:any, res: Response) => {
   const { deposit } = req.body || 0;
-  const { user } = req.auth || null;
+  const { userId } = req.auth || null;
 
-  if (!user || !deposit) {
+  if (!userId || !deposit) {
     throw new Error("Invalid request");
   }
 
-  const updatedUser: User = await depositController.update(user, deposit);
+  const updatedUser: User = await depositController.update(userId, deposit);
   res.json(updatedUser);
 });
 

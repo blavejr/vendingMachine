@@ -1,7 +1,11 @@
 import api from "./index";
 
-const login = async () => {
-  const response = await api.get("/user/");
+const login = async (username: string, password: string) => {
+  const response = await api.get("/user", {
+    headers: {
+      Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+    },
+  });
   return response.data;
 };
 
@@ -27,9 +31,9 @@ const resetdeposit = async (id: string) => {
 };
 
 const getUser = async (id: string) => {
-    const response = await api.get(`/user/${id}`);
-    return response.data;
-}
+  const response = await api.get(`/user/${id}`);
+  return response.data;
+};
 
 const userAPI = {
   login,
