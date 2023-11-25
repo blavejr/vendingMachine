@@ -9,21 +9,16 @@ import VMModal from "../VMModal/VMModal";
 import { useNavigate } from "react-router-dom";
 import depositAPI from "../../api/deposit";
 import userAPI from "../../api/user";
+import { useUser } from "../../context/UserContext";
 
-interface NavbarProps {
-  username: string;
-  deposit: number;
-  role: string;
-}
-
-function VMNavbar({ username, deposit, role }: NavbarProps) {
+function VMNavbar() {
   const navigate = useNavigate();
-
+  const { user } = useUser();
+  console.log(user);
   const handleDeposit = (e: any, deposit: number) => {
     depositAPI
       .deposit(deposit)
       .then((res) => {
-        console.log(res);
         window.location.reload();
       })
       .catch((err) => {
@@ -35,7 +30,6 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
     depositAPI
       .resetDeposit()
       .then((res: any) => {
-        console.log(res);
         window.location.reload();
       })
       .catch((err: Error) => {
@@ -73,13 +67,13 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
               </NavDropdown.Item>
             </NavDropdown>
           </Button>
-          {role === "seller" && <VMModal />}
-          <Navbar.Brand className="mx-2">N$ {deposit}</Navbar.Brand>
+          {user?.role === "seller" && <VMModal />}
+          <Navbar.Brand className="mx-2">N$ {user?.deposit}</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Row>
               <Nav className="me-auto">
-                <NavDropdown title={username} id="basic-nav-dropdown">
+                <NavDropdown title={user?.username} id="basic-nav-dropdown">
                   <NavDropdown.Item onClick={() => navigate("/orders")}>
                     Orders
                   </NavDropdown.Item>

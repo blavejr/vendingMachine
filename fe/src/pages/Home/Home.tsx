@@ -5,12 +5,12 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import productsAPI from "../../api/product";
 import buyAPI from "../../api/buy";
-import { read, write, clear } from "../../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import VMNavbar from "../../components/VMNavbar/VMNavbar";
 import cx from "classnames";
 import loading from "../../loading.jpg";
+import { useUser } from "../../context/UserContext";
 
 interface Product {
   id: string;
@@ -23,13 +23,14 @@ interface Product {
 }
 
 export default function Home() {
-  const [userId, setUserId] = React.useState<any>(read("userId") || null);
-  const [user, setUser] = React.useState<any>({});
+  const { user, logout, setUserData } = useUser();
   const [products, setProducts] = React.useState<any>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Load all products
+    console.log("user Home: ", user);
+    
     productsAPI
       .getAll()
       .then((res) => {
@@ -38,26 +39,14 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
         if (err.response.status === 401) {
-          clear();
+          logout();
           navigate("/");
         }
       });
   }, []);
 
-  useEffect(() => {
-    userAPI
-      .getUser(userId)
-      .then((res) => {
-        setUser(res);
-        write("user", res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   const handleBuy = (productCost: number, productId: string) => {
-    if (user.role === "seller" && user.deposit > productCost) {
+    if (user?.role === "seller" && user?.deposit > productCost) {
       return alert("You cannot buy with seller account");
     }
     buyAPI
@@ -74,19 +63,22 @@ export default function Home() {
 
   return (
     <div>
-      <VMNavbar {...user} />
+      <VMNavbar
+      />
       <Row>
         {!products || !products?.items ? (
           <img src={loading} alt="loading animation" />
         ) : (
           products?.items?.map((product: Product) => (
             <Col lg={3} md={6} xs={12}>
-              <ProductCard
-                {...product}
-                userId={user?.id}
-                userRole={user?.role}
-                handleBuy={handleBuy}
-              />
+              {user && (
+                <ProductCard
+                  {...product}
+                  userId={user.id}
+                  userRole={user.role}
+                  handleBuy={handleBuy}
+                />
+              )}
             </Col>
           ))
         )}

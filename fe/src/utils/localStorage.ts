@@ -8,7 +8,7 @@ export const write = (key: string, value: any) => {
 
 export const setToken = (token: string) => {
   try {
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", String(token));
   } catch (error) {
     console.error("Error writing to localStorage:", error);
   }

@@ -8,10 +8,12 @@ import * as yup from "yup";
 import { setToken, write } from "../../utils/localStorage";
 import userAPI from "../../api/user";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
 
 function LoginPage() {
   const { Formik } = formik;
   const navigate = useNavigate();
+  const { login } = useUser();
 
   const schema = yup.object().shape({
     password: yup.string().required(),
@@ -27,7 +29,7 @@ function LoginPage() {
           .login(values.username, values.password)
           .then((res) => {
             setToken(res.token);
-            write("userId", res.id);
+            login(res);
             navigate("/home");
           })
           .catch((err) => {

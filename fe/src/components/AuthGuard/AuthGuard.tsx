@@ -5,11 +5,11 @@ import { read } from '../../utils/localStorage';
 const AuthGuard = ({ children }: any) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (read('token') === null) {
-      navigate('/');
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (read('token') === null) {
+  //     navigate('/');
+  //   }
+  // }, []);
 
   // Render the children if the user is logged in
   return (

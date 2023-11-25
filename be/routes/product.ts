@@ -19,9 +19,9 @@ router.get("/:id", async (req: any, res: Response) => {
 });
 
 router.post("/", async (req: any, res: Response) => {
-  const { user } = req.auth || {};
+  const { userId } = req.auth || {};
   await productSchema.create.validate(req.body, { abortEarly: false });
-  const product: Product = await productController.create(user, req.body);
+  const product: Product = await productController.create(userId, req.body);
   res.json(product);
 });
 

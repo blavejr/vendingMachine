@@ -9,6 +9,7 @@ import Landing from "./pages/Landing/Landing";
 import Home from "./pages/Home/Home";
 import Orders from "./pages/Orders/Orders";
 import AuthGuard from "./components/AuthGuard/AuthGuard";
+import { UserProvider } from "./context/UserContext";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -44,7 +45,9 @@ const BrowserRouter = createBrowserRouter([
 function App() {
   return (
     <div className={cx(styles.App)}>
-      <RouterProvider router={BrowserRouter} />
+      <UserProvider>
+        <RouterProvider router={BrowserRouter} />
+      </UserProvider>
     </div>
   );
 }

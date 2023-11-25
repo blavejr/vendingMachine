@@ -1,1 +1,1 @@
-export default [{ url: "/user", methods: ["GET"] }];
+export default [{ url: "/user", methods: ["GET", "POST"] }];

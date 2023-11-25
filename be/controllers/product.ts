@@ -3,6 +3,7 @@ import UserModel from "../models/user";
 import { formatProduct } from "../utils/product";
 import validationMessages from "../validation/messages.schema";
 import { Roles } from "../utils/user";
+import { Types } from "mongoose";
 
 export async function get(id: string): Promise<Product> {
   const product = await ProductModel.findById(id);
@@ -23,10 +24,10 @@ export async function getAll(): Promise<Array<Product>> {
 }
 
 export async function create(
-  authUserName: string,
+  userId: Types.ObjectId,
   product: Product
 ): Promise<Product> {
-  const user = await UserModel.findOne({ username: authUserName });
+  const user = await UserModel.findById(userId);
 
   if (!user) {
     throw new Error(validationMessages.user.notFound.message);
