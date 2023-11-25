@@ -1,6 +1,7 @@
 # Welcome to Vending Machine, a simple implemantation of a vending machine
 
 This is a fullstack tech challange for MVP match Nov 2023
+### This server is not intended for production purposes but more for learning and development
 
 # Infrastruture
 The project is using docker containers orchastrated by docker compose for simple setup
@@ -14,7 +15,15 @@ setup should be as simple as running one command `docker-compose up`
         - `npm run test:dev`
 - database -> MongoDB (port 27017)
     - migrations
-        - I will try if I have time to add some
+        - I have opted to add some prefil scripts just to start the database with some data, this is good if someone is joing the project they already have a good starting place.
+            - 2 users
+                - buyer: aBuy:passWord1
+                - seller: aSell:passWord1
+            - 4 products
+            - 2 buys(orders) belonging to the buyer
+    - once the containers are done building go to the be folder and run
+    - `npm run migrate:container`
+            
 
 - CI/CD -> github actions(https://github.com/blavejr/vendingMachine/actions)
     - Github actions

@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test:dev": "./node_modules/jest/bin/jest.js",
-    "compile": "./node_modules/typescript/bin/tsc && node ./bin/server.js",
-    "start": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\""
+    "compile": "./node_modules/typescript/bin/tsc",
+    "run:dev": "node ./bin/server.js",
+    "start": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run run:dev\"",
+    "migrate": "node ./bin/db/prefill.js",
+    "migrate:local": "npm run migrate",
+    "migrate:container": "docker exec -it vending_be npm run migrate"
   },
   "author": "",
   "license": "ISC",

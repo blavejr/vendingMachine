@@ -12,6 +12,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# compile typescript
+RUN npm run compile
+
 # Expose port 3001
 EXPOSE 3001
 
