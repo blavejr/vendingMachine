@@ -49,6 +49,7 @@ export default function Home() {
       .getUser(userId)
       .then((res) => {
         setUser(res);
+        write("user", res);
       })
       .catch((err) => {
         console.log(err);

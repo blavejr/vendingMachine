@@ -7,8 +7,9 @@ import { Types } from "mongoose";
 
 // Promise<Buy[]>
 export async function getAll(userId: Types.ObjectId): Promise<Buy[]> {
+  const user = (await UserModel.findById(userId))?.toObject()!;
   const purchases = await BuyModel.find({
-    buyerId: (await UserModel.findById(userId))?.toObject()!.id,
+    buyerId: user._id,
   }).populate("productId");
   return purchases;
 }
