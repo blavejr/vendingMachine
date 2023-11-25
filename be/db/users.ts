@@ -7,7 +7,7 @@ export default [
     name: "Buyer Test",
     username: "aBuy",
     password: "$2b$10$/l6aFdNEtgcRbfEa0dQ0MOjBEDQEfbEw00ldWFZ8t//HG/rnYqnlq",
-    deposit: 200,
+    deposit: 20000,
     role: Roles.BUYER,
   },
   {

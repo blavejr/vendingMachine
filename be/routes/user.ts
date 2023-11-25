@@ -4,6 +4,7 @@ import * as sessionController from "../controllers/session";
 import { User } from "../models/user";
 import { basicAuthMiddleware } from "../middleware/auth";
 import * as userSchema from "../validation/users.schema";
+import { Types } from "mongoose";
 
 const router = express.Router();
 
@@ -37,7 +38,8 @@ router
   })
   // Users can only get other users, should be admin only
   .get("/:id", async (req, res) => {
-    const user: User = await userController.get(req.params.id);
+    const userId = new Types.ObjectId(req.params.id);
+    const user: User = await userController.get(userId);
     res.json(user);
   })
   // Users can create themselves

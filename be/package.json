@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:dev": "./node_modules/jest/bin/jest.js",
+    "test:dev": "./node_modules/jest/bin/jest.js --detectOpenHandles",
+    "test:user": "./node_modules/jest/bin/jest.js ./__tests__/intergration/user.test.ts",
+    "test:buy": "./node_modules/jest/bin/jest.js ./__tests__/intergration/buy.test.ts",
+    "test:product": "./node_modules/jest/bin/jest.js ./__tests__/intergration/product.test.ts",
     "compile": "./node_modules/typescript/bin/tsc",
-    "run:dev": "node ./bin/server.js",
+    "run:dev": "npm run compile && node ./bin/server.js",
     "start": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run run:dev\"",
-    "migrate": "node ./bin/db/prefill.js",
+    "migrate": "node ./bin/db/dropDB.js && node ./bin/db/prefill.js",
     "migrate:local": "npm run migrate",
     "migrate:container": "docker exec -it vending_be npm run migrate"
   },

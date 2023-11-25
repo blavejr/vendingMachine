@@ -19,9 +19,9 @@ export async function create(
   amount: number,
   userId: Types.ObjectId
 ): Promise<Buy> {
-  const buyer = (await UserModel.findById(userId))?.toObject()!;
-  const product = (await ProductModel.findById(product_id))?.toObject()!;
-  const seller = (await UserModel.findById(product.sellerId))?.toObject()!;
+  const buyer = (await UserModel.findById(userId))!.toObject()!;
+  const product = (await ProductModel.findById(product_id))!.toObject()!;
+  const seller = (await UserModel.findById(product.sellerId))!.toObject()!;
 
   if (!buyer || !seller) {
     throw new Error(validationMessages.user.notFound.message);

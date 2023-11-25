@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export default [
   {
+    _id: new mongoose.Types.ObjectId("656216496381cdf3c94d6015"),
     amountAvailable: 35,
     cost: 10,
     productName: "chips",
@@ -10,6 +11,7 @@ export default [
     sellerId: new mongoose.Types.ObjectId("65616ce394184915d9664327"),
   },
   {
+    _id: new mongoose.Types.ObjectId("656216496381cdf3c94d6016"),
     amountAvailable: 35,
     cost: 10,
     productName: "biltong",
@@ -18,6 +20,7 @@ export default [
     sellerId: new mongoose.Types.ObjectId("65616ce394184915d9664327"),
   },
   {
+    _id: new mongoose.Types.ObjectId("656216496381cdf3c94d6017"),
     amountAvailable: 35,
     cost: 10,
     productName: "sprite",
@@ -26,6 +29,7 @@ export default [
     sellerId: new mongoose.Types.ObjectId("65616ce394184915d9664327"),
   },
   {
+    _id: new mongoose.Types.ObjectId("656216496381cdf3c94d6018"),
     amountAvailable: 35,
     cost: 10,
     productName: "fanta",

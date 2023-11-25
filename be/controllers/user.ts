@@ -16,7 +16,7 @@ export async function findByUserName(username: string): Promise<any> {
   return { ...formattedUser, password: undefined };
 }
 
-export async function get(id: string): Promise<any> {
+export async function get(id: Types.ObjectId): Promise<any> {
   const user = await UserModel.findById(id);
 
   if (!user) {
@@ -43,7 +43,7 @@ export async function create(user: User): Promise<any> {
   return { ...formattedUser, password: undefined };
 }
 
-export async function update(userId: string, user: User): Promise<any> {
+export async function update(userId: Types.ObjectId, user: User): Promise<any> {
   const updatedUser = await UserModel.findByIdAndUpdate(userId, user, {
     new: true,
   });
@@ -62,7 +62,7 @@ export async function resetDeposit(userId: Types.ObjectId): Promise<any> {
   return { ...formatUser(updatedUser!), password: undefined };
 }
 
-export async function delete_(id: string): Promise<User> {
+export async function delete_(id: Types.ObjectId): Promise<User> {
   const user = await UserModel.findByIdAndDelete(id);
   return formatUser(user!);
 }

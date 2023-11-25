@@ -5,9 +5,9 @@ import validationMessages from "../validation/messages.schema";
 import { Roles } from "../utils/user";
 import { Types } from "mongoose";
 
-export async function get(id: string): Promise<Product> {
-  const product = await ProductModel.findById(id);
+export async function get(id: Types.ObjectId): Promise<Product> {
 
+  const product = await ProductModel.findById(id);
   if (!product) {
     throw new Error(validationMessages.product.notFound.message);
   }
@@ -47,13 +47,11 @@ export async function create(
 }
 
 export async function update(
-  username: string,
+  userId: Types.ObjectId,
   product: Product
 ): Promise<Product> {
-  const authenticatedUser = await UserModel.findOne({ username: username });
+  const authenticatedUser = await UserModel.findById(userId);
   const currentProduct = await ProductModel.findById(product.id);
-
-  // check if the userid and sellerid match
 
   if (!currentProduct) {
     throw new Error(validationMessages.product.notFound.message);

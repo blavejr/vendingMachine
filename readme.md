@@ -16,13 +16,12 @@ setup should be as simple as running one command `docker-compose up`
 - database -> MongoDB (port 27017)
     - migrations
         - I have opted to add some prefil scripts just to start the database with some data, this is good if someone is joing the project they already have a good starting place.
+        migrations will run automatically in container
             - 2 users
                 - buyer: aBuy:passWord1
                 - seller: aSell:passWord1
             - 4 products
             - 2 buys(orders) belonging to the buyer
-    - once the containers are done building go to the be folder and run
-    - `npm run migrate:container`
             
 
 - CI/CD -> github actions(https://github.com/blavejr/vendingMachine/actions)

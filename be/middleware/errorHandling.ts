@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { UnauthorizedError } from "express-jwt";
 import { ValidationError } from "yup";
 import * as statusCodes from "../validation/statusCodes";
+import messagesSchema from "../validation/messages.schema";
 
 export default function errorHandlingMiddleware(
   error: any,
@@ -33,13 +34,16 @@ export default function errorHandlingMiddleware(
     case error instanceof Error && error.message === "User not a buyer":
       res.status(statusCodes.NOT_FOUND).json({ error: "User not a buyer" });
       break;
+    case error instanceof Error && error.message === "Product not found":
+      res.status(statusCodes.NOT_FOUND).json({ error: "Product not found" });
+      break;
 
     // Generic error handling
     default:
       console.error(error);
       res
-        .status(statusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Internal Server Error" });
+        .status(messagesSchema.internalServerError.code)
+        .json({ error: messagesSchema.internalServerError.message });
       break;
   }
 }
