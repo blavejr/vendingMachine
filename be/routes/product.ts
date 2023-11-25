@@ -8,11 +8,9 @@ const router = express.Router();
 
 router
   .get("/", async (req: any, res: Response) => {
-    const products: Array<Product> = await productController.getAll();
-    res.json({
-      items: products,
-      total: products.length,
-    });
+    const { page = 1, pageSize = 10 } = req.query;
+    const products = await productController.getAll(page, pageSize);
+    res.json(products);
   })
 
   .get("/:id", async (req: any, res: Response) => {

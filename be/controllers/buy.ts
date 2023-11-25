@@ -5,14 +5,27 @@ import validationMessages from "../validation/messages.schema";
 import { Roles } from "../utils/user";
 import { Types } from "mongoose";
 
-// Promise<Buy[]>
-export async function getAll(userId: Types.ObjectId): Promise<Buy[]> {
+export async function getAll(userId: Types.ObjectId, page: number = 1, pageSize: number = 10): Promise<{ purchases: Buy[], totalPages: number, count: number }> {
   const user = (await UserModel.findById(userId))?.toObject()!;
+  
+  const totalItems = await BuyModel.countDocuments({
+    buyerId: user._id,
+  });
+
+  const totalPages = Math.max(Math.ceil(totalItems / pageSize), 1);
+  const currentPage = Math.min(page, totalPages);
+
   const purchases = await BuyModel.find({
     buyerId: user._id,
-  }).populate("productId");
-  return purchases;
+  })
+    .populate("productId")
+    .skip((currentPage - 1) * pageSize)
+    .limit(pageSize);
+
+  return { purchases, totalPages, count: totalItems };
 }
+
+
 
 export async function create(
   product_id: string,

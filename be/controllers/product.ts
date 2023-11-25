@@ -15,13 +15,21 @@ export async function get(id: Types.ObjectId): Promise<Product> {
   return formatProduct(product);
 }
 
-// TODO: return a list of products belonging to a authenticated user
-export async function getAll(): Promise<Array<Product>> {
-  const product = await ProductModel.find({});
-  return product.map((product) => {
-    return formatProduct(product);
-  });
+export async function getAll(page: number = 1, pageSize: number = 10): Promise<{ products: Product[], totalPages: number, count: number }> {
+  const totalItems = await ProductModel.countDocuments({});
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  const currentPage = Math.min(page, totalPages);
+
+  const products = await ProductModel.find({})
+    .skip((currentPage - 1) * pageSize)
+    .limit(pageSize);
+
+  const formattedProducts = products.map(product => formatProduct(product));
+
+  return { products: formattedProducts, totalPages, count: totalItems };
 }
+
 
 export async function create(
   userId: Types.ObjectId,
