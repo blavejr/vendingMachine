@@ -6,8 +6,14 @@ const deposit = async (deposit: number) => {
   return response.data;
 };
 
+const resetDeposit = async () => {
+  const response = await api.get(`/user/reset/deposit`);
+  return response.data;
+}
+
 const depositAPI = {
     deposit,
+    resetDeposit
 };
 
 export default depositAPI;

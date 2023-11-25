@@ -31,6 +31,18 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
       });
   };
 
+  const resetDeposit = () => {
+    depositAPI
+      .resetDeposit()
+      .then((res: any) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err: Error) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <Navbar className={cx("bg-body-tertiary", "my-3")}>
@@ -55,6 +67,9 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
               </NavDropdown.Item>
               <NavDropdown.Item onClick={(e) => handleDeposit(e, 100)}>
                 100
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => resetDeposit()}>
+                reset
               </NavDropdown.Item>
             </NavDropdown>
           </Button>

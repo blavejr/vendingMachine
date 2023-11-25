@@ -3,6 +3,7 @@ import { formatUser } from "../utils/user";
 import bcrypt from "bcrypt";
 import validationMessages from "../validation/messages.schema";
 import jwt from "jsonwebtoken";
+import { Types } from "mongoose";
 
 export async function findByUserName(username: string): Promise<any> {
   // find the authenticated user
@@ -51,13 +52,9 @@ export async function update(userId: string, user: User): Promise<any> {
 }
 
 // reset deposit to 0
-export async function resetDeposit(username: string): Promise<any> {
-  // get user
-
-  const currentUser = await UserModel.findOne({ username: username });
-  // update user
+export async function resetDeposit(userId: Types.ObjectId): Promise<any> {
   const updatedUser = await UserModel.findOneAndUpdate(
-    currentUser!._id,
+    {_id: userId},
     { deposit: 0 },
     { new: true }
   );
