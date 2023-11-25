@@ -18,8 +18,11 @@ DB_.once("connected", () => {
 
 async function prefill() {
   try {
-    mongoose.connect("mongodb://mongo:27017/vendingMachine");
+    await mongoose.connect("mongodb://mongo:27017/vendingMachine");
+    console.log("Before inserting users");
     await UserModel.insertMany(usersArray);
+    console.log("After inserting users");
+
     await ProductModel.insertMany(productsArray);
     await BuyModel.insertMany(buysArray);
   } finally {

@@ -18,5 +18,5 @@ RUN npm run compile
 # Expose port 3001
 EXPOSE 3001
 
-# Run the app
-CMD [ "npm", "start" ]
+# Run migrations and start the app
+CMD [ "sh", "-c", "npm run migrate && npm start" ]
