@@ -10,7 +10,7 @@ export default function Orders() {
     buyAPI
       .getAll()
       .then((res) => {
-        setOrders(res);
+        setOrders(res.purchases);
       })
       .catch((err) => {
         console.log(err);

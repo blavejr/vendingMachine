@@ -28,13 +28,10 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load all products
-    console.log("user Home: ", user);
-    
     productsAPI
       .getAll()
       .then((res) => {
-        setProducts(res);
+        setProducts(res.products);
       })
       .catch((err) => {
         console.log(err);
@@ -66,10 +63,10 @@ export default function Home() {
       <VMNavbar
       />
       <Row>
-        {!products || !products?.items ? (
+        {!products ? (
           <img src={loading} alt="loading animation" />
         ) : (
-          products?.items?.map((product: Product) => (
+          products.map((product: Product) => (
             <Col lg={3} md={6} xs={12}>
               {user && (
                 <ProductCard
