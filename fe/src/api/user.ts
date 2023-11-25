@@ -15,6 +15,11 @@ const logout = async (data: any) => {
   return response.data;
 };
 
+const logoutAll = async () => {
+  const response = await api.get("/user/reset/sessions");
+  return response.data;
+};
+
 const register = async (data: any) => {
   const response = await api.post("/user", data);
   return response.data;
@@ -42,6 +47,7 @@ const userAPI = {
   delete_,
   resetdeposit,
   getUser,
+  logoutAll
 };
 
 export default userAPI;

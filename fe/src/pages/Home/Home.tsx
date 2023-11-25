@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import productsAPI from "../../api/product";
 import buyAPI from "../../api/buy";
-import { read, write } from "../../utils/localStorage";
+import { read, write, clear } from "../../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import VMNavbar from "../../components/VMNavbar/VMNavbar";
@@ -37,6 +37,10 @@ export default function Home() {
       })
       .catch((err) => {
         console.log(err);
+        if (err.response.status === 401) {
+          clear();
+          navigate("/");
+        }
       });
   }, []);
 

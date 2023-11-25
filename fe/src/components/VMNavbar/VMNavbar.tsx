@@ -8,6 +8,7 @@ import cx from "classnames";
 import VMModal from "../VMModal/VMModal";
 import { useNavigate } from "react-router-dom";
 import depositAPI from "../../api/deposit";
+import userAPI from "../../api/user";
 
 interface NavbarProps {
   username: string;
@@ -34,10 +35,7 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
     <div>
       <Navbar className={cx("bg-body-tertiary", "my-3")}>
         <Container>
-          <Navbar.Brand
-            onClick={() =>navigate("/home")}
-            className="mx-2"
-          >
+          <Navbar.Brand onClick={() => navigate("/home")} className="mx-2">
             Vending Machine
           </Navbar.Brand>
           <Button className="mx-2">
@@ -67,12 +65,10 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
             <Row>
               <Nav className="me-auto">
                 <NavDropdown title={username} id="basic-nav-dropdown">
-                  <NavDropdown.Item
-                    onClick={()=>navigate("/orders")}
-                  >
+                  <NavDropdown.Item onClick={() => navigate("/orders")}>
                     Orders
                   </NavDropdown.Item>
-                  
+
                   <NavDropdown.Item
                     onClick={() => {
                       localStorage.clear();
@@ -80,6 +76,22 @@ function VMNavbar({ username, deposit, role }: NavbarProps) {
                     }}
                   >
                     Logout
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item
+                    onClick={() => {
+                      userAPI
+                        .logoutAll()
+                        .then((res: any) => {
+                          localStorage.clear();
+                          navigate("/");
+                        })
+                        .catch((err: Error) => {
+                          console.log(err);
+                        });
+                    }}
+                  >
+                    Logout All devices
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
