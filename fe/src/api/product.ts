@@ -1,7 +1,7 @@
 import api from "./index";
 
-const getAll = async () => {
-  const response = await api.get("/product");
+const getAll = async (page: number = 1, pageSize: number = 10) => {
+  const response = await api.get(`/product?page=${page}&pageSize=${pageSize}`);
   return response.data;
 };
 

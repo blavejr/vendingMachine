@@ -1,30 +1,30 @@
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import * as formik from "formik";
+import React, { useState } from "react";
+import { Button, Col, Form, InputGroup, Row, Alert } from "react-bootstrap";
+import { Formik } from "formik";
 import * as yup from "yup";
-import { setToken, write } from "../../utils/localStorage";
+import { setToken } from "../../utils/localStorage";
 import userAPI from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
+import cx from "classnames";
+import styles from "./Login.module.scss";
 
 function LoginPage() {
-  const { Formik } = formik;
   const navigate = useNavigate();
   const { login } = useUser();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const schema = yup.object().shape({
-    password: yup.string().required(),
-    username: yup.string().required(),
+    password: yup.string().required("Password is required"),
+    username: yup.string().required("Username is required"),
   });
 
   return (
     <Formik
       validationSchema={schema}
-      onSubmit={(values) => {
-        console.log(values);
+      onSubmit={(values, { setSubmitting }) => {
+        setLoginError(null); // Reset login error
+
         userAPI
           .login(values.username, values.password)
           .then((res) => {
@@ -33,7 +33,11 @@ function LoginPage() {
             navigate("/home");
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
+            setLoginError("Invalid username or password. Please try again.");
+          })
+          .finally(() => {
+            setSubmitting(false);
           });
       }}
       initialValues={{
@@ -55,7 +59,7 @@ function LoginPage() {
                   name="username"
                   value={values.username}
                   onChange={handleChange}
-                  isInvalid={!!errors.username}
+                  isInvalid={touched.username && !!errors.username}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.username}
@@ -63,7 +67,7 @@ function LoginPage() {
               </InputGroup>
             </Form.Group>
 
-            <Form.Group as={Col} md="12" controlId="validationFormik02">
+            <Form.Group as={Col} md="12" controlId="validationFormikPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
@@ -71,13 +75,25 @@ function LoginPage() {
                 value={values.password}
                 onChange={handleChange}
                 isValid={touched.password && !errors.password}
+                isInvalid={touched.password && !!errors.password}
               />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.password}
+              </Form.Control.Feedback>
             </Form.Group>
           </Row>
+
+          {loginError && <Alert variant="danger">{loginError}</Alert>}
+
           <Button type="submit" disabled={!isValid}>
             Login
           </Button>
+
+          <p>
+            Dont have an account?{" "}
+            <span className={cx(styles.registerLink)} onClick={(e) => navigate("/register")}>Register</span>
+          </p>
+
         </Form>
       )}
     </Formik>

@@ -1,115 +1,87 @@
-import react from "react";
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { Button, Nav, NavDropdown } from "react-bootstrap";
+import React, { FC, useEffect, useState } from "react";
+import { Navbar, Container } from "react-bootstrap";
 import cx from "classnames";
 import VMModal from "../VMModal/VMModal";
 import { useNavigate } from "react-router-dom";
 import depositAPI from "../../api/deposit";
 import userAPI from "../../api/user";
-import { useUser } from "../../context/UserContext";
+import { useUser, User } from "../../context/UserContext";
+import DepositDropdown from "./DepositDropdown/DepositDropdown";
+import UserActions from "./UserActions/UserActions";
+import styles from './VMNavbar.module.scss';
 
-function VMNavbar() {
+interface VMNavbarProps {}
+
+const VMNavbar: FC<VMNavbarProps> = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
-  console.log(user);
-  const handleDeposit = (e: any, deposit: number) => {
+  const { user, setUserData } = useUser();
+  const [deposit, setDeposit] = useState<number>(user?.deposit || 0);
+
+  const handleDeposit = (e: any, depositAmount: number) => {
     depositAPI
-      .deposit(deposit)
+      .deposit(depositAmount)
       .then((res) => {
-        window.location.reload();
+        setUserData({ ...user!, deposit: res.deposit + depositAmount });
+        setDeposit((prevDeposit) => prevDeposit + depositAmount);
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Error depositing:", err);
+        alert("Error depositing. Please try again.");
       });
   };
 
   const resetDeposit = () => {
     depositAPI
       .resetDeposit()
-      .then((res: any) => {
-        window.location.reload();
+      .then((res) => {
+        setUserData({ ...user!, deposit: res!.deposit });
+        setDeposit(0);
       })
       .catch((err: Error) => {
-        console.log(err);
+        console.error("Error resetting deposit:", err);
+        alert("Error resetting deposit. Please try again.");
       });
   };
 
+  const handleLogoutAll = () => {
+    userAPI
+      .logoutAll()
+      .then(() => {
+        localStorage.clear();
+        navigate("/");
+      })
+      .catch((err: Error) => {
+        console.error("Error logging out all devices:", err);
+        alert("Error logging out all devices. Please try again.");
+      });
+  };
+
+  useEffect(() => {
+    setDeposit(user?.deposit || 0);
+  }, [user?.deposit]);
+
   return (
     <div>
-      <Navbar className={cx("bg-body-tertiary", "my-3")}>
+      <Navbar className={cx("bg-body-tertiary", "p-3", "my-3")}>
         <Container>
-          <Navbar.Brand onClick={() => navigate("/home")} className="mx-2">
+          <Navbar.Brand onClick={() => navigate("/home")} className={cx(styles.homeBrand, "mx-2")}>
             Vending Machine
           </Navbar.Brand>
-          <Button className="mx-2">
-            {/* TODO: Make this a loop */}
-            <NavDropdown title="Deposit" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={(e) => handleDeposit(e, 5)}>
-                5
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={(e) => handleDeposit(e, 10)}>
-                10
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={(e) => handleDeposit(e, 20)}>
-                20
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={(e) => handleDeposit(e, 50)}>
-                50
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={(e) => handleDeposit(e, 100)}>
-                100
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => resetDeposit()}>
-                reset
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Button>
+          <DepositDropdown onDeposit={handleDeposit} onReset={resetDeposit} />
           {user?.role === "seller" && <VMModal />}
-          <Navbar.Brand className="mx-2">N$ {user?.deposit}</Navbar.Brand>
+          <Navbar.Brand className={cx("mx-2")}>N$ {deposit}</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
-            <Row>
-              <Nav className="me-auto">
-                <NavDropdown title={user?.username} id="basic-nav-dropdown">
-                  <NavDropdown.Item onClick={() => navigate("/orders")}>
-                    Orders
-                  </NavDropdown.Item>
-
-                  <NavDropdown.Item
-                    onClick={() => {
-                      localStorage.clear();
-                      navigate("/");
-                    }}
-                  >
-                    Logout
-                  </NavDropdown.Item>
-
-                  <NavDropdown.Item
-                    onClick={() => {
-                      userAPI
-                        .logoutAll()
-                        .then((res: any) => {
-                          localStorage.clear();
-                          navigate("/");
-                        })
-                        .catch((err: Error) => {
-                          console.log(err);
-                        });
-                    }}
-                  >
-                    Logout All devices
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </Nav>
-            </Row>
+            <UserActions
+              username={user!.username}
+              onLogout={() => navigate("/")}
+              onLogoutAll={handleLogoutAll}
+            />
           </Navbar.Collapse>
         </Container>
       </Navbar>
     </div>
   );
-}
+};
 
 export default VMNavbar;

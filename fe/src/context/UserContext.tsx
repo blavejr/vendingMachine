@@ -3,7 +3,7 @@ import * as localStorage from "../utils/localStorage";
 import userAPI from "../api/user";
 import { decodeToken } from "react-jwt";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   username: string;
@@ -21,7 +21,7 @@ interface DecodedToken {
   exp: number;
 }
 
-const initialUser = {
+const initialUser: User = {
   id: "",
   name: "",
   username: "Default",
@@ -34,17 +34,12 @@ const initialUser = {
 
 interface UserContextProps {
   user: User | null;
-  setUserData: (userData: any) => void;
-  login: (userData: any) => void;
+  setUserData: (userData: User) => void;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
-const UserContext = createContext<UserContextProps>({
-  user: initialUser,
-  setUserData: () => {},
-  login: () => {},
-  logout: () => {},
-});
+const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -52,22 +47,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(initialUser);
 
   useEffect(() => {
-    const decodedToken = decodeToken(localStorage.read("token")) as DecodedToken;
-    console.log("user context: ", user);
-    console.log("user context: ", decodeToken(localStorage.read("token")));
-    if (!decodedToken || !decodedToken.userId) {
-      return;
+    const token = localStorage.read("token");
+    if (token) {
+      const decodedToken = decodeToken(token) as DecodedToken;
+      if (decodedToken.userId) {
+        userAPI
+          .getUser(decodedToken.userId)
+          .then((res) => {
+            setUserData(res);
+          })
+          .catch((err) => {
+            console.error("Error fetching user data:", err);
+          });
+      }
     }
-    userAPI
-      .getUser(decodedToken.userId)
-      .then((res) => {
-        console.log("user context22: ", res);
-        setUserData(res);
-      })
-      .catch((err) => {
-        console.log("user context24: ", err);
-        console.log(err);
-      });
   }, []);
 
   const setUserData = (userData: User) => {
@@ -75,7 +68,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const login = (userData: User) => {
-    // Lazy but works for now :) need to submit
     setUser(userData);
     localStorage.write("token", userData.token);
   };
